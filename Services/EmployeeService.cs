@@ -43,7 +43,7 @@ namespace EmployesManagementSystemApi.Services
                 Phone = dto.Phone,
                 Position = dto.Position,
                 Salary = dto.Salary,
-                HireDate = dto.HireDate,
+                HireDate = DateTime.SpecifyKind(dto.HireDate, DateTimeKind.Utc),
                 DepartmentId = dto.DepartmentId,
                 IsActive = true
             };

@@ -1,5 +1,6 @@
 using EmployesManagementSystemApi.DTOs.Employee;
 using EmployesManagementSystemApi.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmployesManagementSystemApi.Controllers
