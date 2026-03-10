@@ -14,19 +14,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add Controllers
 builder.Services.AddControllers();
 
-// Add OpenAPI with HTTPS server URL (fixes Scalar URL in production)
-builder.Services.AddOpenApi(options =>
-{
-    options.AddDocumentTransformer((document, context, ct) =>
-    {
-        document.Servers = new List<Microsoft.OpenApi.Models.OpenApiServer>
-        {
-            new() { Url = "https://emp-mgmt-api.up.railway.app" }
-        };
-        return Task.CompletedTask;
-    });
-});
-
 // Register DbContext with PostgreSQL (NeonDB)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
