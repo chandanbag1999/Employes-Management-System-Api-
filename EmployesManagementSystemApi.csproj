@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>9e07c3f9-d968-4a51-b3a0-be4d902de5a1</UserSecretsId>
+    <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.AspNetCore.OpenApi.Generated</InterceptorsNamespaces>
   </PropertyGroup>
 
   <ItemGroup>
