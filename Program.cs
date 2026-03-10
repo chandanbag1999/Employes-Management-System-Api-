@@ -54,7 +54,17 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Railway proxy → X-Forwarded-Proto → HTTPS
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor 
+    | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto;
+});
+
 var app = builder.Build();
+
+// Railway proxy → X-Forwarded-Proto → HTTPS
+app.UseForwardedHeaders();
 
 // Always enable (Development + Production dono)
 app.MapOpenApi();
