@@ -56,13 +56,14 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();               // serves /openapi/v1.json
-    app.MapScalarApiReference();    // serves /scalar/v1  ← browser UI
-}
+// Always enable (Development + Production dono)
+app.MapOpenApi();
+app.MapScalarApiReference();               // scaler/v1
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.UseAuthentication();   // ← Must be before UseAuthorization
 app.UseAuthorization();
 app.MapControllers();
