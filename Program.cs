@@ -14,8 +14,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Add Controllers
 builder.Services.AddControllers();
 
-// Add OpenAPI (built-in .NET 10) + Scalar UI
-builder.Services.AddOpenApi();
+// Add OpenAPI with HTTPS server URL (fixes Scalar URL in production)
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer((document, context, ct) =>
+    {
+        document.Servers = new List<Microsoft.OpenApi.Models.OpenApiServer>
+        {
+            new() { Url = "https://emp-mgmt-api.up.railway.app" }
+        };
+        return Task.CompletedTask;
+    });
+});
 
 // Register DbContext with PostgreSQL (NeonDB)
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -54,17 +64,11 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Railway proxy → X-Forwarded-Proto → HTTPS
-builder.Services.Configure<ForwardedHeadersOptions>(options =>
-{
-    options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor 
-    | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto;
-});
+
 
 var app = builder.Build();
 
-// Railway proxy → X-Forwarded-Proto → HTTPS
-app.UseForwardedHeaders();
+
 
 // Always enable (Development + Production dono)
 app.MapOpenApi();
