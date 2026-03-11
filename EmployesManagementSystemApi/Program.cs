@@ -11,6 +11,15 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS - Frontend access to API
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader());
+});
+
 // Add Controllers
 builder.Services.AddControllers();
 
@@ -61,7 +70,8 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
-
+// Enable CORS Middleware
+app.UseCors();
 
 // Always enable (Development + Production dono)
 app.MapOpenApi();
