@@ -49,6 +49,7 @@ namespace EmployesManagementSystemApi.Controllers
 
         // PUT api/department/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id, [FromBody] CreateDepartmentDto dto)
         {
             var updated = await _departmentService.UpdateAsync(id, dto);
@@ -61,14 +62,18 @@ namespace EmployesManagementSystemApi.Controllers
 
         // DELETE api/department/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
-            var deleted = await _departmentService.DeleteAsync(id);
+            var result = await _departmentService.DeleteAsync(id);
 
-            if (!deleted)
-                return NotFound(new { message = $"Department with ID {id} not found." });
-
-            return Ok(new { message = "Department deleted successfully." });
+            return result switch
+            {
+                DepartmentDeleteStatus.NotFound => NotFound(new { message = $"Department with ID {id} not found." }),
+                DepartmentDeleteStatus.HasEmployees => Conflict(new { message = "Cannot delete department because employees are assigned to it." }),
+                _ => Ok(new { message = "Department deleted successfully." })
+            };
         }
+
     }
 }

@@ -30,7 +30,13 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 // JWT Authentication
 var jwtSecret = builder.Configuration["JwtSettings:Secret"];
-var key = Encoding.UTF8.GetBytes(jwtSecret!);
+if (string.IsNullOrWhiteSpace(jwtSecret))
+    throw new InvalidOperationException("JWT secret missing. Set JwtSettings:Secret or environment variables.");
+
+if (jwtSecret.Length <  32)
+    throw new InvalidOperationException("JWT secret too short. Use at least 32 characters.");
+
+var key = Encoding.UTF8.GetBytes(jwtSecret);
 
 builder.Services.AddAuthentication(options =>
 {

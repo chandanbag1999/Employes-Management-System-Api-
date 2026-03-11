@@ -8,6 +8,7 @@ namespace EmployesManagementSystemApi.Services.Interfaces
         Task<DepartmentResponseDto?> GetByIdAsync(int id);
         Task<DepartmentResponseDto> CreateAsync(CreateDepartmentDto dto);
         Task<DepartmentResponseDto?> UpdateAsync(int id, CreateDepartmentDto dto);
-        Task<bool> DeleteAsync(int id);
+        Task<DepartmentDeleteStatus> DeleteAsync(int id);
+
     }
 }

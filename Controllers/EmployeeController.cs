@@ -58,6 +58,7 @@ namespace EmployesManagementSystemApi.Controllers
 
         // PUT api/employee/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateEmployeeDto dto)
         {
             var updated = await _employeeService.UpdateAsync(id, dto);
@@ -70,6 +71,7 @@ namespace EmployesManagementSystemApi.Controllers
 
         // DELETE api/employee/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var deleted = await _employeeService.DeleteAsync(id);

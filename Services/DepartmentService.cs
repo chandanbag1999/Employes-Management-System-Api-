@@ -52,10 +52,19 @@ namespace EmployesManagementSystemApi.Services
             return MapToDto(updated);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<DepartmentDeleteStatus> DeleteAsync(int id)
         {
-            return await _departmentRepository.DeleteAsync(id);
+            var department = await _departmentRepository.GetByIdAsync(id);
+            if (department == null)
+                return DepartmentDeleteStatus.NotFound;
+
+            if (department.Employees.Any())
+                return DepartmentDeleteStatus.HasEmployees;
+
+            var deleted = await _departmentRepository.DeleteAsync(id);
+            return deleted ? DepartmentDeleteStatus.Success : DepartmentDeleteStatus.NotFound;
         }
+
 
         // Private helper — maps Model to DTO
         private DepartmentResponseDto MapToDto(Department d)

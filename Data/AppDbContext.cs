@@ -23,11 +23,24 @@ namespace EmployesManagementSystemApi.Data
                 .WithMany(d => d.Employees)
                 .HasForeignKey(e => e.DepartmentId)
                 .OnDelete(DeleteBehavior.Restrict);
-            
+
             // Configure decimal precision for Salary
             modelBuilder.Entity<Employee>()
                 .Property(e => e.Salary)
                 .HasColumnType("numeric(18,2)");
+
+            // Unique constraints
+            modelBuilder.Entity<AppUser>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Employee>()
+                .HasIndex(e => e.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Department>()
+                .HasIndex(d => d.Name)
+                .IsUnique();
         }
     }
 }
