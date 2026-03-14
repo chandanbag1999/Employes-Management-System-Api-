@@ -23,6 +23,9 @@ builder.Services.AddCors(options =>
 // Add Controllers
 builder.Services.AddControllers();
 
+// Required for OpenApi document generation
+builder.Services.AddOpenApi();
+
 // Register DbContext with PostgreSQL (NeonDB)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
