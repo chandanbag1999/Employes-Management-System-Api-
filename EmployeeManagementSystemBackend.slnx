@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/EMS.API/EMS.API.csproj" />
+    <Project Path="src/EMS.Application/EMS.Application.csproj" />
+    <Project Path="src/EMS.Domain/EMS.Domain.csproj" />
+    <Project Path="src/EMS.Infrastructure/EMS.Infrastructure.csproj" />
+  </Folder>
+</Solution>
