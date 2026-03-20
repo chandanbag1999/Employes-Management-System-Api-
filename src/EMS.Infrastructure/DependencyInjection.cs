@@ -1,6 +1,8 @@
 using EMS.Application.Common.Interfaces;
 using EMS.Application.Modules.Identity.Interfaces;
 using EMS.Application.Modules.Identity.Services;
+using EMS.Application.Modules.Organization.Interfaces;
+using EMS.Application.Modules.Organization.Services;
 using EMS.Infrastructure.Persistence;
 using EMS.Infrastructure.Repositories;
 using EMS.Infrastructure.Services;
@@ -31,11 +33,15 @@ public static class DependencyInjection
 
         // Repositories
         services.AddScoped<IAuthRepository, AuthRepository>();
+        services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+        services.AddScoped<IDesignationRepository, DesignationRepository>();
 
         // Services
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IDepartmentService, DepartmentService>();
+        services.AddScoped<IDesignationService, DesignationService>();
 
         // JWT Authentication
         var secret = configuration["JwtSettings:Secret"]!;
