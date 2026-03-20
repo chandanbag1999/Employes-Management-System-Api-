@@ -1,0 +1,21 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace EMS.Application.Modules.Identity.DTOs;
+
+public class RegisterDto
+{
+    [Required]
+    [MaxLength(100)]
+    public string UserName { get; set; } = string.Empty;
+
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; } = string.Empty;
+
+    [Required]
+    [MinLength(6)]
+    public string Password { get; set; } = string.Empty;
+
+    // Default User — Admin sirf manually DB se banega
+    public string Role { get; set; } = "Employee";
+}
