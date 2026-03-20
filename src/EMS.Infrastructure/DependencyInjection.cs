@@ -14,6 +14,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using EMS.Application.Modules.Employees.Interfaces;
 using EMS.Application.Modules.Employees.Services;
+using EMS.Application.Modules.Attendance.Interfaces;
+using EMS.Application.Modules.Attendance.Services;
 
 namespace EMS.Infrastructure;
 
@@ -38,6 +40,8 @@ public static class DependencyInjection
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         services.AddScoped<IDesignationRepository, DesignationRepository>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+
 
         // Services
         services.AddScoped<IAuthService, AuthService>();
@@ -46,6 +50,8 @@ public static class DependencyInjection
         services.AddScoped<IDepartmentService, DepartmentService>();
         services.AddScoped<IDesignationService, DesignationService>();
         services.AddScoped<IEmployeeService, EmployeeService>();
+        services.AddScoped<IAttendanceService, AttendanceService>();
+
 
 
         // JWT Authentication

@@ -1,5 +1,6 @@
 using EMS.Domain.Common;
 using EMS.Domain.Enums;
+using EMS.Domain.Entities.Employee;
 
 namespace EMS.Domain.Entities.Attendance;
 
@@ -12,4 +13,7 @@ public class AttendanceRecord : BaseEntity
     public AttendanceStatus Status { get; set; }
     public double? WorkingHours { get; set; }
     public string? Remarks { get; set; }
+
+    // Navigation
+    public EmployeeProfile? Employee { get; set; }
 }

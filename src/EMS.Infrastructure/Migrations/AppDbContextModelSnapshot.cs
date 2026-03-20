@@ -471,6 +471,17 @@ namespace EMS.Infrastructure.Migrations
                     b.ToTable("Goals", (string)null);
                 });
 
+            modelBuilder.Entity("EMS.Domain.Entities.Attendance.AttendanceRecord", b =>
+                {
+                    b.HasOne("EMS.Domain.Entities.Employee.EmployeeProfile", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
             modelBuilder.Entity("EMS.Domain.Entities.Employee.EmployeeProfile", b =>
                 {
                     b.HasOne("EMS.Domain.Entities.Organization.Department", "Department")

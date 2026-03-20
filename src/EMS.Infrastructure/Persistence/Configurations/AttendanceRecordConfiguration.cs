@@ -9,15 +9,20 @@ public class AttendanceRecordConfiguration : IEntityTypeConfiguration<Attendance
     public void Configure(EntityTypeBuilder<AttendanceRecord> builder)
     {
         builder.ToTable("AttendanceRecords");
-
         builder.HasKey(a => a.Id);
 
         builder.Property(a => a.Status)
             .HasConversion<string>();
 
-        // One employee ka ek din mein ek hi record
+        // Ek employee ka ek din mein sirf ek record
         builder.HasIndex(a => new { a.EmployeeId, a.Date })
             .IsUnique();
+
+        // Employee → AttendanceRecords
+        builder.HasOne(a => a.Employee)
+            .WithMany()
+            .HasForeignKey(a => a.EmployeeId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasQueryFilter(a => !a.IsDeleted);
     }
