@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EMS.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6e9f6d0f8eca5b64ff8b24f1ef8f712a1917cda2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+55cc6bb069b8f32cbbf20bf4b7a4a84b55e9378e")]
 [assembly: System.Reflection.AssemblyProductAttribute("EMS.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EMS.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

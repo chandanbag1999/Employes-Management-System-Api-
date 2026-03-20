@@ -32,6 +32,8 @@ public class AppDbContext : DbContext
 
     // Payroll
     public DbSet<SalaryStructure> SalaryStructures => Set<SalaryStructure>();
+    public DbSet<PayrollRecord> PayrollRecords => Set<PayrollRecord>();
+
 
     // Performance
     public DbSet<Goal> Goals => Set<Goal>();

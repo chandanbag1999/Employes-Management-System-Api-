@@ -9,7 +9,6 @@ public class SalaryStructureConfiguration : IEntityTypeConfiguration<SalaryStruc
     public void Configure(EntityTypeBuilder<SalaryStructure> builder)
     {
         builder.ToTable("SalaryStructures");
-
         builder.HasKey(s => s.Id);
 
         builder.Property(s => s.BasicSalary).HasColumnType("decimal(18,2)");
@@ -18,6 +17,11 @@ public class SalaryStructureConfiguration : IEntityTypeConfiguration<SalaryStruc
         builder.Property(s => s.MedicalAllowance).HasColumnType("decimal(18,2)");
         builder.Property(s => s.OtherAllowances).HasColumnType("decimal(18,2)");
         builder.Property(s => s.GrossSalary).HasColumnType("decimal(18,2)");
+
+        builder.HasOne(s => s.Employee)
+            .WithMany()
+            .HasForeignKey(s => s.EmployeeId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasQueryFilter(s => !s.IsDeleted);
     }

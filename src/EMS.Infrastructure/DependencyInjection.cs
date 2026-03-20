@@ -18,6 +18,8 @@ using EMS.Application.Modules.Attendance.Interfaces;
 using EMS.Application.Modules.Attendance.Services;
 using EMS.Application.Modules.Leave.Interfaces;
 using EMS.Application.Modules.Leave.Services;
+using EMS.Application.Modules.Payroll.Interfaces;
+using EMS.Application.Modules.Payroll.Services;
 
 namespace EMS.Infrastructure;
 
@@ -44,7 +46,7 @@ public static class DependencyInjection
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         services.AddScoped<IAttendanceRepository, AttendanceRepository>();
         services.AddScoped<ILeaveRepository, LeaveRepository>();
-
+        services.AddScoped<IPayrollRepository, PayrollRepository>();
 
 
         // Services
@@ -56,8 +58,7 @@ public static class DependencyInjection
         services.AddScoped<IEmployeeService, EmployeeService>();
         services.AddScoped<IAttendanceService, AttendanceService>();
         services.AddScoped<ILeaveService, LeaveService>();
-
-
+        services.AddScoped<IPayrollService, PayrollService>();
 
 
         // JWT Authentication
