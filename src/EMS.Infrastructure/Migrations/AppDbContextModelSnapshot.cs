@@ -548,8 +548,18 @@ namespace EMS.Infrastructure.Migrations
                     b.Property<int>("ProgressPercent")
                         .HasColumnType("integer");
 
-                    b.Property<string>("ReviewCycleYear")
-                        .HasColumnType("text");
+                    b.Property<string>("ReviewCycle")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<int?>("SetByManagerId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -561,7 +571,92 @@ namespace EMS.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("SetByManagerId");
+
                     b.ToTable("Goals", (string)null);
+                });
+
+            modelBuilder.Entity("EMS.Domain.Entities.Performance.PerformanceReview", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AreasOfImprovement")
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("CommunicationRating")
+                        .HasColumnType("decimal(3,1)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("EmployeeSelfComment")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<decimal>("LeadershipRating")
+                        .HasColumnType("decimal(3,1)");
+
+                    b.Property<decimal>("OverallRating")
+                        .HasColumnType("decimal(3,1)");
+
+                    b.Property<decimal>("PunctualityRating")
+                        .HasColumnType("decimal(3,1)");
+
+                    b.Property<string>("Quarter")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<string>("ReviewCycle")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("ReviewerComments")
+                        .HasColumnType("text");
+
+                    b.Property<int>("ReviewerId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("Strengths")
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("TeamworkRating")
+                        .HasColumnType("decimal(3,1)");
+
+                    b.Property<decimal>("TechnicalSkillRating")
+                        .HasColumnType("decimal(3,1)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReviewerId");
+
+                    b.HasIndex("EmployeeId", "ReviewCycle")
+                        .IsUnique();
+
+                    b.ToTable("PerformanceReviews", (string)null);
                 });
 
             modelBuilder.Entity("EMS.Domain.Entities.Attendance.AttendanceRecord", b =>
@@ -655,6 +750,43 @@ namespace EMS.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("EMS.Domain.Entities.Performance.Goal", b =>
+                {
+                    b.HasOne("EMS.Domain.Entities.Employee.EmployeeProfile", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EMS.Domain.Entities.Employee.EmployeeProfile", "SetByManager")
+                        .WithMany()
+                        .HasForeignKey("SetByManagerId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("SetByManager");
+                });
+
+            modelBuilder.Entity("EMS.Domain.Entities.Performance.PerformanceReview", b =>
+                {
+                    b.HasOne("EMS.Domain.Entities.Employee.EmployeeProfile", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EMS.Domain.Entities.Employee.EmployeeProfile", "Reviewer")
+                        .WithMany()
+                        .HasForeignKey("ReviewerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Reviewer");
                 });
 
             modelBuilder.Entity("EMS.Domain.Entities.Organization.Department", b =>

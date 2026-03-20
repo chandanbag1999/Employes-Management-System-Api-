@@ -7,6 +7,7 @@ using EMS.Domain.Entities.Payroll;
 using EMS.Domain.Entities.Performance;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace EMS.Infrastructure.Persistence;
 
 public class AppDbContext : DbContext
@@ -37,6 +38,8 @@ public class AppDbContext : DbContext
 
     // Performance
     public DbSet<Goal> Goals => Set<Goal>();
+    public DbSet<PerformanceReview> PerformanceReviews => Set<PerformanceReview>();
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
