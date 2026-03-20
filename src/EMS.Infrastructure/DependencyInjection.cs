@@ -12,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using EMS.Application.Modules.Employees.Interfaces;
+using EMS.Application.Modules.Employees.Services;
 
 namespace EMS.Infrastructure;
 
@@ -35,6 +37,7 @@ public static class DependencyInjection
         services.AddScoped<IAuthRepository, AuthRepository>();
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         services.AddScoped<IDesignationRepository, DesignationRepository>();
+        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
         // Services
         services.AddScoped<IAuthService, AuthService>();
@@ -42,6 +45,8 @@ public static class DependencyInjection
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IDepartmentService, DepartmentService>();
         services.AddScoped<IDesignationService, DesignationService>();
+        services.AddScoped<IEmployeeService, EmployeeService>();
+
 
         // JWT Authentication
         var secret = configuration["JwtSettings:Secret"]!;
