@@ -261,6 +261,10 @@ namespace EMS.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ApprovedById");
+
+                    b.HasIndex("EmployeeId");
+
                     b.HasIndex("LeaveTypeId");
 
                     b.ToTable("LeaveApplications", (string)null);
@@ -509,11 +513,26 @@ namespace EMS.Infrastructure.Migrations
 
             modelBuilder.Entity("EMS.Domain.Entities.Leave.LeaveApplication", b =>
                 {
+                    b.HasOne("EMS.Domain.Entities.Employee.EmployeeProfile", "ApprovedBy")
+                        .WithMany()
+                        .HasForeignKey("ApprovedById")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("EMS.Domain.Entities.Employee.EmployeeProfile", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("EMS.Domain.Entities.Leave.LeaveType", "LeaveType")
                         .WithMany()
                         .HasForeignKey("LeaveTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("ApprovedBy");
+
+                    b.Navigation("Employee");
 
                     b.Navigation("LeaveType");
                 });

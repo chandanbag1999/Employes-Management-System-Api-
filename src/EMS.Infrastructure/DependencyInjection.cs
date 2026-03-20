@@ -16,6 +16,8 @@ using EMS.Application.Modules.Employees.Interfaces;
 using EMS.Application.Modules.Employees.Services;
 using EMS.Application.Modules.Attendance.Interfaces;
 using EMS.Application.Modules.Attendance.Services;
+using EMS.Application.Modules.Leave.Interfaces;
+using EMS.Application.Modules.Leave.Services;
 
 namespace EMS.Infrastructure;
 
@@ -41,6 +43,8 @@ public static class DependencyInjection
         services.AddScoped<IDesignationRepository, DesignationRepository>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+        services.AddScoped<ILeaveRepository, LeaveRepository>();
+
 
 
         // Services
@@ -51,6 +55,8 @@ public static class DependencyInjection
         services.AddScoped<IDesignationService, DesignationService>();
         services.AddScoped<IEmployeeService, EmployeeService>();
         services.AddScoped<IAttendanceService, AttendanceService>();
+        services.AddScoped<ILeaveService, LeaveService>();
+
 
 
 
