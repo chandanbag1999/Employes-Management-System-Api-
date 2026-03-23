@@ -1,8 +1,20 @@
 using EMS.Application.Common.Interfaces;
+using EMS.Application.Modules.Attendance.Interfaces;
+using EMS.Application.Modules.Attendance.Services;
+using EMS.Application.Modules.Dashboard.Interfaces;
+using EMS.Application.Modules.Employees.Interfaces;
+using EMS.Application.Modules.Employees.Services;
 using EMS.Application.Modules.Identity.Interfaces;
 using EMS.Application.Modules.Identity.Services;
+using EMS.Application.Modules.Leave.Interfaces;
+using EMS.Application.Modules.Leave.Services;
 using EMS.Application.Modules.Organization.Interfaces;
 using EMS.Application.Modules.Organization.Services;
+using EMS.Application.Modules.Payroll.Interfaces;
+using EMS.Application.Modules.Payroll.Services;
+using EMS.Application.Modules.Performance.Interfaces;
+using EMS.Application.Modules.Performance.Services;
+using EMS.Application.Modules.Reports.Interfaces;
 using EMS.Infrastructure.Persistence;
 using EMS.Infrastructure.Repositories;
 using EMS.Infrastructure.Services;
@@ -12,16 +24,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using EMS.Application.Modules.Employees.Interfaces;
-using EMS.Application.Modules.Employees.Services;
-using EMS.Application.Modules.Attendance.Interfaces;
-using EMS.Application.Modules.Attendance.Services;
-using EMS.Application.Modules.Leave.Interfaces;
-using EMS.Application.Modules.Leave.Services;
-using EMS.Application.Modules.Payroll.Interfaces;
-using EMS.Application.Modules.Payroll.Services;
-using EMS.Application.Modules.Performance.Interfaces;
-using EMS.Application.Modules.Performance.Services;
+using EMS.Infrastructure.Services.Dashboard;
+using EMS.Infrastructure.Services.Reports;
+
+
 
 namespace EMS.Infrastructure;
 
@@ -41,7 +47,7 @@ public static class DependencyInjection
         // UnitOfWork
         services.AddScoped<EMS.Infrastructure.UnitOfWork.UnitOfWork>();
 
-        // Repositories
+        // ── Repositories ─────────────────────────────────────────
         services.AddScoped<IAuthRepository, AuthRepository>();
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         services.AddScoped<IDesignationRepository, DesignationRepository>();
@@ -51,8 +57,7 @@ public static class DependencyInjection
         services.AddScoped<IPayrollRepository, PayrollRepository>();
         services.AddScoped<IPerformanceRepository, PerformanceRepository>();
 
-
-        // Services
+        // ── Services ─────────────────────────────────────────────
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IJwtService, JwtService>();
@@ -63,16 +68,19 @@ public static class DependencyInjection
         services.AddScoped<ILeaveService, LeaveService>();
         services.AddScoped<IPayrollService, PayrollService>();
         services.AddScoped<IPerformanceService, PerformanceService>();
+        services.AddScoped<IDashboardService, DashboardService>();
+        services.AddScoped<IReportService, ReportService>();
 
-
-        // JWT Authentication
+        // ── JWT Authentication ────────────────────────────────────
         var secret = configuration["JwtSettings:Secret"]!;
         var key = Encoding.UTF8.GetBytes(secret);
 
         services.AddAuthentication(options =>
         {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultAuthenticateScheme =
+                JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme =
+                JwtBearerDefaults.AuthenticationScheme;
         })
         .AddJwtBearer(options =>
         {
