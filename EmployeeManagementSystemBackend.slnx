@@ -5,4 +5,7 @@
     <Project Path="src/EMS.Domain/EMS.Domain.csproj" />
     <Project Path="src/EMS.Infrastructure/EMS.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/EMS.UnitTests/EMS.UnitTests.csproj" />
+  </Folder>
 </Solution>

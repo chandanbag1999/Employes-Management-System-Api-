@@ -3091,11 +3091,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\EmployeeManagementSystemBackend\\src\\EMS.Infrastructure\\EMS.Infrastructure.csproj",
+      "projectUniqueName": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\New folder\\EmployeeManagementSystemBackend\\src\\EMS.Infrastructure\\EMS.Infrastructure.csproj",
       "projectName": "EMS.Infrastructure",
-      "projectPath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\EmployeeManagementSystemBackend\\src\\EMS.Infrastructure\\EMS.Infrastructure.csproj",
+      "projectPath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\New folder\\EmployeeManagementSystemBackend\\src\\EMS.Infrastructure\\EMS.Infrastructure.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\EmployeeManagementSystemBackend\\src\\EMS.Infrastructure\\obj\\",
+      "outputPath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\New folder\\EmployeeManagementSystemBackend\\src\\EMS.Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -3116,11 +3116,11 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\EmployeeManagementSystemBackend\\src\\EMS.Application\\EMS.Application.csproj": {
-              "projectPath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\EmployeeManagementSystemBackend\\src\\EMS.Application\\EMS.Application.csproj"
+            "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\New folder\\EmployeeManagementSystemBackend\\src\\EMS.Application\\EMS.Application.csproj": {
+              "projectPath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\New folder\\EmployeeManagementSystemBackend\\src\\EMS.Application\\EMS.Application.csproj"
             },
-            "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\EmployeeManagementSystemBackend\\src\\EMS.Domain\\EMS.Domain.csproj": {
-              "projectPath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\EmployeeManagementSystemBackend\\src\\EMS.Domain\\EMS.Domain.csproj"
+            "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\New folder\\EmployeeManagementSystemBackend\\src\\EMS.Domain\\EMS.Domain.csproj": {
+              "projectPath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\New folder\\EmployeeManagementSystemBackend\\src\\EMS.Domain\\EMS.Domain.csproj"
             }
           }
         }
@@ -3184,7 +3184,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.200/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.CSharp": "(,4.7.32767]",
           "Microsoft.VisualBasic": "(,10.4.32767]",

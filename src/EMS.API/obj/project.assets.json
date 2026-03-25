@@ -2673,11 +2673,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\EmployeeManagementSystemBackend\\src\\EMS.API\\EMS.API.csproj",
+      "projectUniqueName": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\New folder\\EmployeeManagementSystemBackend\\src\\EMS.API\\EMS.API.csproj",
       "projectName": "EMS.API",
-      "projectPath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\EmployeeManagementSystemBackend\\src\\EMS.API\\EMS.API.csproj",
+      "projectPath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\New folder\\EmployeeManagementSystemBackend\\src\\EMS.API\\EMS.API.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\EmployeeManagementSystemBackend\\src\\EMS.API\\obj\\",
+      "outputPath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\New folder\\EmployeeManagementSystemBackend\\src\\EMS.API\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -2698,14 +2698,14 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\EmployeeManagementSystemBackend\\src\\EMS.Application\\EMS.Application.csproj": {
-              "projectPath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\EmployeeManagementSystemBackend\\src\\EMS.Application\\EMS.Application.csproj"
+            "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\New folder\\EmployeeManagementSystemBackend\\src\\EMS.Application\\EMS.Application.csproj": {
+              "projectPath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\New folder\\EmployeeManagementSystemBackend\\src\\EMS.Application\\EMS.Application.csproj"
             },
-            "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\EmployeeManagementSystemBackend\\src\\EMS.Domain\\EMS.Domain.csproj": {
-              "projectPath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\EmployeeManagementSystemBackend\\src\\EMS.Domain\\EMS.Domain.csproj"
+            "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\New folder\\EmployeeManagementSystemBackend\\src\\EMS.Domain\\EMS.Domain.csproj": {
+              "projectPath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\New folder\\EmployeeManagementSystemBackend\\src\\EMS.Domain\\EMS.Domain.csproj"
             },
-            "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\EmployeeManagementSystemBackend\\src\\EMS.Infrastructure\\EMS.Infrastructure.csproj": {
-              "projectPath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\EmployeeManagementSystemBackend\\src\\EMS.Infrastructure\\EMS.Infrastructure.csproj"
+            "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\New folder\\EmployeeManagementSystemBackend\\src\\EMS.Infrastructure\\EMS.Infrastructure.csproj": {
+              "projectPath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\New folder\\EmployeeManagementSystemBackend\\src\\EMS.Infrastructure\\EMS.Infrastructure.csproj"
             }
           }
         }
@@ -2764,7 +2764,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.200/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.AspNetCore": "(,10.0.32767]",
           "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

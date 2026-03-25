@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "spDTZ267Ujg=",
+  "dgSpecHash": "JCFc+gIEuOE=",
   "success": true,
-  "projectFilePath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\EmployeeManagementSystemBackend\\src\\EMS.API\\EMS.API.csproj",
+  "projectFilePath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\New folder\\EmployeeManagementSystemBackend\\src\\EMS.API\\EMS.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\bcrypt.net-next\\4.1.0\\bcrypt.net-next.4.1.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
