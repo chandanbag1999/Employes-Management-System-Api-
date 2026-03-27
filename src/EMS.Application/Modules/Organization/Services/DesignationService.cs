@@ -19,6 +19,12 @@ public class DesignationService : IDesignationService
         return list.Select(MapToDto);
     }
 
+    public async Task<IEnumerable<DesignationResponseDto>> GetAllDeletedAsync()
+    {
+        var list = await _repo.GetAllDeletedAsync();
+        return list.Select(MapToDto);
+    }
+
     public async Task<DesignationResponseDto?> GetByIdAsync(int id)
     {
         var d = await _repo.GetByIdAsync(id);
@@ -51,6 +57,12 @@ public class DesignationService : IDesignationService
 
     public async Task<bool> DeleteAsync(int id)
         => await _repo.DeleteAsync(id);
+
+    public async Task<bool> RestoreAsync(int id)
+        => await _repo.RestoreAsync(id);
+
+    public async Task<int> PurgeOldDeletedAsync(int olderThanMonths = 12)
+        => await _repo.PurgeOldDeletedAsync(olderThanMonths);
 
     private static DesignationResponseDto MapToDto(Designation d) => new()
     {

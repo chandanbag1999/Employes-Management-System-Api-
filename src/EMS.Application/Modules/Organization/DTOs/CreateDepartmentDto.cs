@@ -13,4 +13,6 @@ public class CreateDepartmentDto
 
     [MaxLength(10)]
     public string? Code { get; set; }
+
+    public bool IsActive { get; set; } = true;
 }

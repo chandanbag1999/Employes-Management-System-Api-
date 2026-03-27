@@ -18,11 +18,20 @@ public class DesignationsController : ControllerBase
         _service = service;
     }
 
-    // GET api/v1/designations?departmentId=1
+    // GET api/v1/designations
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int? departmentId = null)
     {
         var result = await _service.GetAllAsync(departmentId);
+        return Ok(ApiResponse<IEnumerable<DesignationResponseDto>>.Ok(result));
+    }
+
+    // GET api/v1/designations/deleted
+    [HttpGet("deleted")]
+    [Authorize(Roles = "SuperAdmin,HRAdmin")]
+    public async Task<IActionResult> GetAllDeleted()
+    {
+        var result = await _service.GetAllDeletedAsync();
         return Ok(ApiResponse<IEnumerable<DesignationResponseDto>>.Ok(result));
     }
 
@@ -62,12 +71,32 @@ public class DesignationsController : ControllerBase
 
     // DELETE api/v1/designations/5
     [HttpDelete("{id}")]
-    [Authorize(Roles = "SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin,HRAdmin")]
     public async Task<IActionResult> Delete(int id)
     {
         var result = await _service.DeleteAsync(id);
         if (!result)
             return NotFound(ApiResponse<string>.Fail("Designation not found."));
         return Ok(ApiResponse<string>.Ok("Deleted", "Designation deleted."));
+    }
+
+    // POST api/v1/designations/5/restore
+    [HttpPost("{id}/restore")]
+    [Authorize(Roles = "SuperAdmin")]
+    public async Task<IActionResult> Restore(int id)
+    {
+        var result = await _service.RestoreAsync(id);
+        if (!result)
+            return NotFound(ApiResponse<string>.Fail("Deleted designation not found."));
+        return Ok(ApiResponse<string>.Ok("Restored", "Designation restored successfully."));
+    }
+
+    // DELETE api/v1/designations/purge?months=12
+    [HttpDelete("purge")]
+    [Authorize(Roles = "SuperAdmin")]
+    public async Task<IActionResult> PurgeOld([FromQuery] int months = 12)
+    {
+        var count = await _service.PurgeOldDeletedAsync(months);
+        return Ok(ApiResponse<string>.Ok($"{count}", $"Purged {count} old deleted designations."));
     }
 }
