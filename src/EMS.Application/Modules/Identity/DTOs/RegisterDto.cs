@@ -16,6 +16,4 @@ public class RegisterDto
     [MinLength(6)]
     public string Password { get; set; } = string.Empty;
 
-    // Default User — Admin sirf manually DB se banega
-    public string Role { get; set; } = "Employee";
 }

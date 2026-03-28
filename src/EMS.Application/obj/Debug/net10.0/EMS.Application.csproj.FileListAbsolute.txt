@@ -45,4 +45,3 @@ D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New fold
 D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.Application\obj\Debug\net10.0\refint\EMS.Application.dll
 D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.Application\obj\Debug\net10.0\EMS.Application.pdb
 D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.Application\obj\Debug\net10.0\ref\EMS.Application.dll
-D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.Application\obj\Debug\net10.0\EMS.Application.sourcelink.json

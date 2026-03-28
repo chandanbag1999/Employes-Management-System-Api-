@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "KZch4JC/zCg=",
+  "dgSpecHash": "HdwuBxMbgIk=",
   "success": true,
-  "projectFilePath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\New folder\\EmployeeManagementSystemBackend\\src\\EMS.Application\\EMS.Application.csproj",
+  "projectFilePath": "D:\\CodeSpace\\Parmanent-Field\\C-Sharp\\Dot_net\\Employes-Management-System\\EmployeeManagementSystemBackend\\src\\EMS.Application\\EMS.Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\bcrypt.net-next\\4.1.0\\bcrypt.net-next.4.1.0.nupkg.sha512"
   ],

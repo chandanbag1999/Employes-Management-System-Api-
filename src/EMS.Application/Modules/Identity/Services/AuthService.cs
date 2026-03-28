@@ -21,21 +21,19 @@ public class AuthService : IAuthService
     {
         // Email already exists?
         if (await _authRepository.EmailExistsAsync(dto.Email))
-            return null;
+        {
+            return null;  
+        }
+            
 
-        // Role validate karo
-        if (!Enum.TryParse<UserRole>(dto.Role, true, out var role))
-            role = UserRole.Employee;
-
-        // Password hash karo — plain text KABHI nahi
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
         var user = new AppUser
         {
-            UserName = dto.UserName,
+            UserName = dto.UserName.Trim(),
             Email = dto.Email.ToLower().Trim(),
             PasswordHash = passwordHash,
-            Role = role,
+            Role = UserRole.Employee, 
             IsActive = true
         };
 
@@ -56,7 +54,7 @@ public class AuthService : IAuthService
     {
         var user = await _authRepository.GetByEmailAsync(dto.Email.ToLower().Trim());
 
-        // User nahi mila ya inactive hai
+        // User exists and active?
         if (user == null || !user.IsActive)
             return null;
 

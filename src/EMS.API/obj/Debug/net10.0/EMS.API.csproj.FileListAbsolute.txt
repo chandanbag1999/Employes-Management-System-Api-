@@ -414,4 +414,3 @@ D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New fold
 D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.API\obj\Debug\net10.0\EMS.API.pdb
 D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.API\obj\Debug\net10.0\EMS.API.genruntimeconfig.cache
 D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.API\obj\Debug\net10.0\ref\EMS.API.dll
-D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.API\obj\Debug\net10.0\EMS.API.sourcelink.json

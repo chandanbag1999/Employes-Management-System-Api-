@@ -1,6 +1,8 @@
+using EMS.Application.Common.DTOs;
 using EMS.Application.Modules.Identity.DTOs;
 using EMS.Application.Modules.Identity.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace EMS.API.Controllers.v1;
 
@@ -20,14 +22,14 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            return BadRequest(ApiResponse<string>.Fail("Invalid request data."));
 
         var result = await _authService.RegisterAsync(dto);
 
         if (result == null)
-            return Conflict(new { message = "Email already registered." });
+            return Conflict(ApiResponse<string>.Fail("Email already registered."));
 
-        return Ok(result);
+        return Ok(ApiResponse<AuthResponseDto>.Ok(result, "Registration successful."));
     }
 
     // POST api/v1/auth/login
@@ -35,13 +37,13 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            return BadRequest(ApiResponse<string>.Fail("Invalid request data."));
 
         var result = await _authService.LoginAsync(dto);
 
         if (result == null)
-            return Unauthorized(new { message = "Invalid email or password." });
+            return Unauthorized(ApiResponse<string>.Fail("Invalid email or password."));
 
-        return Ok(result);
+        return Ok(ApiResponse<AuthResponseDto>.Ok(result, "Login successful."));
     }
 }

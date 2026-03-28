@@ -22,26 +22,21 @@ builder.Services.AddControllers();
 // OpenAPI
 builder.Services.AddOpenApi();
 
-// CORS
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader());
-});
-
-// Infrastructure (DB + JWT + All Services + Repos)
+// Infrastructure (DB + JWT + All Services + repositories)
 builder.Services.AddInfrastructure(builder.Configuration);
+
+// Authorization
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Global Exception Handler — sabse pehle
+// Global Exception Handler — must be before all other middlewares
 app.UseMiddleware<ExceptionMiddleware>();
 
-app.UseCors();
+// CORS
+app.UseCors("AllowFrontend");
 
-// OpenAPI + Scalar — dono environments mein
+// OpenAPI + Scalar — both development and production
 app.MapOpenApi();
 app.MapScalarApiReference(options =>
 {
@@ -49,7 +44,7 @@ app.MapScalarApiReference(options =>
     options.Theme = ScalarTheme.Purple;
 });
 
-app.UseCors("AllowFrontend");
+// Authentication & Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
