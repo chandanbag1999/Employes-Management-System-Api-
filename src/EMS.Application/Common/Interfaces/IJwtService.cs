@@ -4,6 +4,9 @@ namespace EMS.Application.Common.Interfaces;
 
 public interface IJwtService
 {
-    string GenerateToken(AppUser user);
-    DateTime GetExpiryTime();
+    string GenerateAccessToken(AppUser user);
+    string GenerateRefreshToken();
+    DateTime GetAccessTokenExpiry();
+    DateTime GetRefreshTokenExpiry();
+    int? GetUserIdFromToken(string token);
 }

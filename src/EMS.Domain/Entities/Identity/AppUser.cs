@@ -14,4 +14,12 @@ public class AppUser : BaseEntity
 
     // Navigation 
     public int? EmployeeId { get; set; }
+
+    public int FailedLoginAttempts { get; set; } = 0;
+    public DateTime? LockoutEnd { get; set; }
+    public bool IsEmailVerified { get; set; } = false;
+
+    // Navigation property for refresh tokens
+    public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+
 }

@@ -22,6 +22,7 @@
 14. [Capacity & Load Analysis](#14-capacity--load-analysis)
 15. [Known Limitations & Future Improvements](#15-known-limitations--future-improvements)
 16. [Changelog — Version History](#16-changelog--version-history)
+17. [Code Reference Index](#17-code-reference-index)
 
 ---
 
@@ -265,50 +266,92 @@ EmployeeManagementSystemBackend/
 │   │   │   └── Interfaces/
 │   │   │       └── IJwtService.cs
 │   │   └── Modules/                   ← Har module apna ek folder
-│   │       ├── Identity/              (DTOs + Interfaces + Services)
-│   │       ├── Organization/
-│   │       ├── Employees/
-│   │       ├── Attendance/
-│   │       ├── Leave/
-│   │       ├── Payroll/
-│   │       ├── Performance/
-│   │       ├── Dashboard/
-│   │       └── Reports/
+│   │       ├── Identity/              ← AuthService, UserService, RefreshToken
+│   │       │   ├── DTOs/              (Register, Login, Refresh, UserResponse, etc.)
+│   │       │   ├── Interfaces/        (IAuthService, IUserService, IRefreshTokenRepository)
+│   │       │   └── Services/          (AuthService, UserService)
+│   │       ├── Organization/          ← DepartmentService, DesignationService
+│   │       │   ├── DTOs/              (Department, Designation DTOs)
+│   │       │   ├── Interfaces/        (IDepartmentService, IDesignationService)
+│   │       │   └── Services/          (DepartmentService, DesignationService)
+│   │       ├── Employees/             ← EmployeeService
+│   │       │   ├── DTOs/              (Create, Update, Filter, Response)
+│   │       │   ├── Interfaces/        (IEmployeeService, IEmployeeRepository)
+│   │       │   └── Services/          (EmployeeService)
+│   │       ├── Attendance/            ← AttendanceService
+│   │       │   ├── DTOs/              (ClockIn, ClockOut, Manual, Filter, Summary)
+│   │       │   ├── Interfaces/        (IAttendanceService, IAttendanceRepository)
+│   │       │   └── Services/          (AttendanceService)
+│   │       ├── Leave/                 ← LeaveService
+│   │       │   ├── DTOs/              (Apply, Action, Balance, Filter, Types)
+│   │       │   ├── Interfaces/        (ILeaveService, ILeaveRepository)
+│   │       │   └── Services/          (LeaveService)
+│   │       ├── Payroll/               ← PayrollService
+│   │       │   ├── DTOs/              (SalaryStructure, RunPayroll, Record)
+│   │       │   ├── Interfaces/        (IPayrollService, IPayrollRepository)
+│   │       │   └── Services/          (PayrollService)
+│   │       ├── Performance/           ← PerformanceService
+│   │       │   ├── DTOs/              (Goal, Review, Summary)
+│   │       │   ├── Interfaces/        (IPerformanceService, IPerformanceRepository)
+│   │       │   └── Services/          (PerformanceService)
+│   │       ├── Dashboard/             ← DashboardService
+│   │       │   ├── DTOs/              (Stats, Headcount, Activities)
+│   │       │   └── Interfaces/        (IDashboardService)
+│   │       └── Reports/               ← ReportService
+│   │           ├── DTOs/              (Attendance, Payroll, Headcount Reports)
+│   │           └── Interfaces/        (IReportService)
 │   │
 │   ├── EMS.Infrastructure/            ← Layer 3: DB, Repos, External Services
 │   │   ├── Persistence/
-│   │   │   ├── AppDbContext.cs
+│   │   │   ├── AppDbContext.cs       ← EF Core DbContext
 │   │   │   ├── Configurations/        ← EF Core Fluent API — table schemas
-│   │   │   └── Migrations/            ← Auto-generated DB migrations
+│   │   │   │   └── (Configuration files for each entity)
+│   │   │   └── Migrations/           ← Auto-generated DB migrations
 │   │   ├── Repositories/              ← DB queries implementation
+│   │   │   ├── GenericRepository.cs   ← Base repository
+│   │   │   ├── AuthRepository.cs      ← Auth data access
+│   │   │   ├── RefreshTokenRepository.cs ← Refresh token operations
+│   │   │   ├── EmployeeRepository.cs  ← Employee data access
+│   │   │   ├── AttendanceRepository.cs ← Attendance data access
+│   │   │   ├── LeaveRepository.cs     ← Leave data access
+│   │   │   ├── PayrollRepository.cs   ← Payroll data access
+│   │   │   ├── PerformanceRepository.cs ← Performance data access
+│   │   │   ├── DepartmentRepository.cs ← Department data access
+│   │   │   └── DesignationRepository.cs ← Designation data access
 │   │   ├── Services/
-│   │   │   ├── JwtService.cs
+│   │   │   ├── JwtService.cs          ← JWT token generation/validation
 │   │   │   ├── Dashboard/
-│   │   │   │   └── DashboardService.cs
+│   │   │   │   └── DashboardService.cs ← Dashboard analytics
 │   │   │   └── Reports/
-│   │   │       └── ReportService.cs
+│   │   │       └── ReportService.cs   ← Report generation
+│   │   ├── BackgroundServices/
+│   │   │   └── TokenCleanupService.cs  ← Background token cleanup
+│   │   ├── Seeders/
+│   │   │   └── SuperAdminSeeder.cs    ← Auto seed SuperAdmin
 │   │   ├── UnitOfWork/
-│   │   │   └── UnitOfWork.cs
-│   │   └── DependencyInjection.cs     ← Sab services ek jagah register
+│   │   │   └── UnitOfWork.cs         ← Transaction management
+│   │   └── DependencyInjection.cs     ← All DI registrations
 │   │
 │   └── EMS.API/                       ← Layer 4: HTTP Entry Point
-│       ├── Controllers/
-│       │   └── v1/                    ← Versioned endpoints
-│       │       ├── AuthController.cs
-│       │       ├── UsersController.cs
-│       │       ├── DepartmentsController.cs
-│       │       ├── DesignationsController.cs
-│       │       ├── EmployeesController.cs
-│       │       ├── AttendanceController.cs
-│       │       ├── LeaveController.cs
-│       │       ├── PayrollController.cs
-│       │       ├── PerformanceController.cs
-│       │       ├── DashboardController.cs
-│       │       ├── ReportsController.cs
-│       │       └── HealthController.cs
+│       ├── Controllers/v1/            ← Versioned endpoints
+│       │   ├── AuthController.cs       ← POST register, login, refresh, logout
+│       │   ├── UsersController.cs       ← GET users, PATCH role, deactivate
+│       │   ├── DepartmentsController.cs ← CRUD departments
+│       │   ├── DesignationsController.cs ← CRUD + restore/purge designations
+│       │   ├── EmployeesController.cs   ← CRUD employees + filters
+│       │   ├── AttendanceController.cs  ← Clock in/out, manual, summary
+│       │   ├── LeaveController.cs       ← Apply, approve/reject, cancel, balance
+│       │   ├── PayrollController.cs     ← Salary structure, run, payslip
+│       │   ├── PerformanceController.cs ← Goals, reviews, summary
+│       │   ├── DashboardController.cs  ← Stats, headcount, activities
+│       │   ├── ReportsController.cs     ← Attendance, payroll, headcount reports
+│       │   └── HealthController.cs     ← Ping, db connection check
 │       ├── Middleware/
 │       │   └── ExceptionMiddleware.cs  ← Global error handling
-│       ├── Program.cs
+│       ├── Program.cs                  ← App entry point
+│       ├── Properties/
+│       │   ├── launchSettings.json
+│       │   └── PublishProfiles/
 │       └── appsettings.json
 │
 └── tests/
@@ -324,6 +367,8 @@ EmployeeManagementSystemBackend/
 
 **Kya hai:** Pure business entities — koi DB logic nahi, koi HTTP logic nahi.
 
+**📁 Source File:** [`EMS.Domain/Common/BaseEntity.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Common/BaseEntity.cs)
+
 **BaseEntity** — Har entity ka base:
 ```csharp
 public abstract class BaseEntity
@@ -334,6 +379,31 @@ public abstract class BaseEntity
     public bool IsDeleted { get; set; } = false;  // Soft delete
 }
 ```
+
+**All Domain Entities:**
+| Entity | File Path |
+|--------|-----------|
+| AppUser | [`EMS.Domain/Entities/Identity/AppUser.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Entities/Identity/AppUser.cs) |
+| RefreshToken | [`EMS.Domain/Entities/Identity/RefreshToken.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Entities/Identity/RefreshToken.cs) |
+| EmployeeProfile | [`EMS.Domain/Entities/Employee/EmployeeProfile.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Entities/Employee/EmployeeProfile.cs) |
+| Department | [`EMS.Domain/Entities/Organization/Department.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Entities/Organization/Department.cs) |
+| Designation | [`EMS.Domain/Entities/Organization/Designation.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Entities/Organization/Designation.cs) |
+| AttendanceRecord | [`EMS.Domain/Entities/Attendance/AttendanceRecord.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Entities/Attendance/AttendanceRecord.cs) |
+| LeaveApplication | [`EMS.Domain/Entities/Leave/LeaveApplication.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Entities/Leave/LeaveApplication.cs) |
+| LeaveType | [`EMS.Domain/Entities/Leave/LeaveType.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Entities/Leave/LeaveType.cs) |
+| PayrollRecord | [`EMS.Domain/Entities/Payroll/PayrollRecord.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Entities/Payroll/PayrollRecord.cs) |
+| SalaryStructure | [`EMS.Domain/Entities/Payroll/SalaryStructure.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Entities/Payroll/SalaryStructure.cs) |
+| Goal | [`EMS.Domain/Entities/Performance/Goal.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Entities/Performance/Goal.cs) |
+| PerformanceReview | [`EMS.Domain/Entities/Performance/PerformanceReview.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Entities/Performance/PerformanceReview.cs) |
+
+**All Enums:**
+| Enum | File Path |
+|------|-----------|
+| UserRole | [`EMS.Domain/Enums/UserRole.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Enums/UserRole.cs) |
+| EmploymentStatus | [`EMS.Domain/Enums/EmploymentStatus.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Enums/EmploymentStatus.cs) |
+| Gender | [`EMS.Domain/Enums/Gender.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Enums/Gender.cs) |
+| LeaveStatus | [`EMS.Domain/Enums/LeaveStatus.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Enums/LeaveStatus.cs) |
+| AttendanceStatus | [`EMS.Domain/Enums/AttendanceStatus.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Enums/AttendanceStatus.cs) |
 
 **Kyon Soft Delete?**
 - Real companies mein data permanently delete nahi hoti
@@ -347,13 +417,24 @@ public abstract class BaseEntity
 
 **Kya hai:** Business rules, validation logic, data transformation.
 
+**📁 Source Files:**
+- [`EMS.Application/Common/DTOs/ApiResponse.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Application/Common/DTOs/ApiResponse.cs)
+- [`EMS.Application/Common/DTOs/PaginatedResult.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Application/Common/DTOs/PaginatedResult.cs)
+
 **ApiResponse Pattern** — Consistent response structure:
-```json
+```csharp
+public class ApiResponse<T>
 {
-  "success": true,
-  "message": "Employee created successfully",
-  "data": { ... },
-  "errors": []
+    public bool Success { get; set; }
+    public string Message { get; set; } = string.Empty;
+    public T? Data { get; set; }
+    public List<string> Errors { get; set; } = new();
+
+    public static ApiResponse<T> Ok(T data, string message = "Success")
+        => new() { Success = true, Message = message, Data = data };
+
+    public static ApiResponse<T> Fail(string message, List<string>? errors = null)
+        => new() { Success = false, Message = message, Errors = errors ?? new() };
 }
 ```
 
@@ -363,15 +444,16 @@ public abstract class BaseEntity
 - Success/failure ek flag se pata chalta hai
 
 **PaginatedResult Pattern:**
-```json
+```csharp
+public class PaginatedResult<T>
 {
-  "data": [...],
-  "totalCount": 150,
-  "page": 1,
-  "pageSize": 10,
-  "totalPages": 15,
-  "hasNext": true,
-  "hasPrevious": false
+    public IEnumerable<T> Data { get; set; } = new List<T>();
+    public int TotalCount { get; set; }
+    public int Page { get; set; }
+    public int PageSize { get; set; }
+    public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
+    public bool HasNext => Page < TotalPages;
+    public bool HasPrevious => Page > 1;
 }
 ```
 
@@ -381,10 +463,53 @@ public abstract class BaseEntity
 
 **Kya hai:** Database ke saath interaction, JWT generation, external services.
 
+**📁 Source Files:**
+| File | Purpose |
+|------|---------|
+| [`EMS.Infrastructure/DependencyInjection.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Infrastructure/DependencyInjection.cs) | All DI registrations |
+| [`EMS.Infrastructure/Persistence/AppDbContext.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Infrastructure/Persistence/AppDbContext.cs) | EF Core DbContext |
+| [`EMS.Infrastructure/Seeders/SuperAdminSeeder.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Infrastructure/Seeders/SuperAdminSeeder.cs) | Auto seeds SuperAdmin |
+| [`EMS.Infrastructure/BackgroundServices/TokenCleanupService.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Infrastructure/BackgroundServices/TokenCleanupService.cs) | Background token cleanup |
+
 **AppDbContext** — EF Core ka main class:
-- Har entity ka DbSet registered hai
-- `OnModelCreating` mein `ApplyConfigurationsFromAssembly` — sab configurations auto-apply
-- Query Filters — global soft delete
+```csharp
+public class AppDbContext : DbContext
+{
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+    // Identity
+    public DbSet<AppUser> Users => Set<AppUser>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
+    // Organization
+    public DbSet<Department> Departments => Set<Department>();
+    public DbSet<Designation> Designations => Set<Designation>();
+
+    // Employee
+    public DbSet<EmployeeProfile> Employees => Set<EmployeeProfile>();
+
+    // Attendance
+    public DbSet<AttendanceRecord> AttendanceRecords => Set<AttendanceRecord>();
+
+    // Leave
+    public DbSet<LeaveType> LeaveTypes => Set<LeaveType>();
+    public DbSet<LeaveApplication> LeaveApplications => Set<LeaveApplication>();
+
+    // Payroll
+    public DbSet<SalaryStructure> SalaryStructures => Set<SalaryStructure>();
+    public DbSet<PayrollRecord> PayrollRecords => Set<PayrollRecord>();
+
+    // Performance
+    public DbSet<Goal> Goals => Set<Goal>();
+    public DbSet<PerformanceReview> PerformanceReviews => Set<PerformanceReview>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        base.OnModelCreating(modelBuilder);
+    }
+}
+```
 
 **Configurations (Fluent API)** — Kyon Data Annotations nahi?
 ```
@@ -396,19 +521,57 @@ builder.Property(u => u.UserName).IsRequired().HasMaxLength(100);
 → Domain clean rahta hai, configuration alag file mein
 ```
 
-**GenericRepository Pattern:**
-```csharp
-public class GenericRepository<T> where T : BaseEntity
-{
-    // GetAll, GetById, Create, Update, Delete — ek baar likha, sab use karte hain
-}
-```
+**All Repositories:**
+| Repository | File Path |
+|------------|-----------|
+| GenericRepository | [`EMS.Infrastructure/Repositories/GenericRepository.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Infrastructure/Repositories/GenericRepository.cs) |
+| EmployeeRepository | [`EMS.Infrastructure/Repositories/EmployeeRepository.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Infrastructure/Repositories/EmployeeRepository.cs) |
+| AttendanceRepository | [`EMS.Infrastructure/Repositories/AttendanceRepository.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Infrastructure/Repositories/AttendanceRepository.cs) |
+| LeaveRepository | [`EMS.Infrastructure/Repositories/LeaveRepository.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Infrastructure/Repositories/LeaveRepository.cs) |
+| PayrollRepository | [`EMS.Infrastructure/Repositories/PayrollRepository.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Infrastructure/Repositories/PayrollRepository.cs) |
+| PerformanceRepository | [`EMS.Infrastructure/Repositories/PerformanceRepository.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Infrastructure/Repositories/PerformanceRepository.cs) |
+| DepartmentRepository | [`EMS.Infrastructure/Repositories/DepartmentRepository.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Infrastructure/Repositories/DepartmentRepository.cs) |
+| DesignationRepository | [`EMS.Infrastructure/Repositories/DesignationRepository.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Infrastructure/Repositories/DesignationRepository.cs) |
+| AuthRepository | [`EMS.Infrastructure/Repositories/AuthRepository.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Infrastructure/Repositories/AuthRepository.cs) |
+| RefreshTokenRepository | [`EMS.Infrastructure/Repositories/RefreshTokenRepository.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Infrastructure/Repositories/RefreshTokenRepository.cs) |
 
 ---
 
 ### Layer 4: EMS.API
 
 **Kya hai:** HTTP requests receive karo, validate karo, service call karo, response do.
+
+**📁 Source Files:**
+| File | Purpose |
+|------|---------|
+| [`EMS.API/Program.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.API/Program.cs) | App entry point, middleware setup |
+| [`EMS.API/Middleware/ExceptionMiddleware.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.API/Middleware/ExceptionMiddleware.cs) | Global error handler |
+
+**Program.cs Key Sections:**
+```csharp
+// CORS Policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
+// Infrastructure (DB + JWT + All Services + Repositories)
+builder.Services.AddInfrastructure(builder.Configuration);
+
+// Database Migration + Seeding on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await db.Database.MigrateAsync();
+    await SuperAdminSeeder.SeedAsync(db, builder.Configuration);
+}
+```
 
 **ExceptionMiddleware** — Global error handler:
 ```
@@ -1520,3 +1683,184 @@ dotnet build
 *Document Owner: Backend Development Team*
 
 > **Note:** Yeh document ek living document hai. Har feature, bug fix, ya architectural decision ke saath isse update karo. Future self aur team members ko bahut help milegi.
+
+---
+
+## 17. Code Reference Index
+
+### Complete File Tree
+
+```
+EmployeeManagementSystemBackend/src/
+├── EMS.API/                              # Presentation Layer
+│   ├── Controllers/v1/
+│   │   ├── AuthController.cs             # POST register, login, refresh, logout
+│   │   ├── UsersController.cs            # GET users, PATCH role, deactivate
+│   │   ├── DepartmentsController.cs      # CRUD departments
+│   │   ├── DesignationsController.cs     # CRUD designations + restore/purge
+│   │   ├── EmployeesController.cs        # CRUD employees + filters
+│   │   ├── AttendanceController.cs       # Clock in/out, manual, summary
+│   │   ├── LeaveController.cs           # Apply, approve/reject, cancel, balance
+│   │   ├── PayrollController.cs          # Salary structure, run, payslip
+│   │   ├── PerformanceController.cs      # Goals, reviews, summary
+│   │   ├── DashboardController.cs        # Stats, headcount, activities
+│   │   ├── ReportsController.cs          # Attendance, payroll, headcount reports
+│   │   └── HealthController.cs           # Ping, db connection check
+│   ├── Middleware/
+│   │   └── ExceptionMiddleware.cs        # Global error handler
+│   ├── Program.cs                        # App entry point
+│   └── appsettings.json
+│
+├── EMS.Application/                      # Application Layer
+│   ├── Common/
+│   │   ├── DTOs/
+│   │   │   ├── ApiResponse.cs            # Standard response wrapper
+│   │   │   └── PaginatedResult.cs        # Pagination wrapper
+│   │   └── Interfaces/
+│   │       └── IJwtService.cs            # JWT service interface
+│   └── Modules/
+│       ├── Identity/
+│       │   ├── DTOs/                     # Register, Login, Refresh, UserResponse
+│       │   ├── Interfaces/               # IAuthService, IUserService, IRefreshTokenRepository
+│       │   └── Services/                 # AuthService, UserService
+│       ├── Organization/
+│       │   ├── DTOs/                     # Department, Designation DTOs
+│       │   ├── Interfaces/               # IDepartmentService, IDesignationService
+│       │   └── Services/                 # DepartmentService, DesignationService
+│       ├── Employees/
+│       │   ├── DTOs/                     # Create, Update, Filter, Response DTOs
+│       │   ├── Interfaces/               # IEmployeeService, IEmployeeRepository
+│       │   └── Services/                 # EmployeeService
+│       ├── Attendance/
+│       │   ├── DTOs/                     # ClockIn, ClockOut, Filter, Summary DTOs
+│       │   ├── Interfaces/               # IAttendanceService, IAttendanceRepository
+│       │   └── Services/                 # AttendanceService
+│       ├── Leave/
+│       │   ├── DTOs/                     # Apply, Action, Balance, Filter DTOs
+│       │   ├── Interfaces/               # ILeaveService, ILeaveRepository
+│       │   └── Services/                 # LeaveService
+│       ├── Payroll/
+│       │   ├── DTOs/                     # SalaryStructure, RunPayroll, Record DTOs
+│       │   ├── Interfaces/               # IPayrollService, IPayrollRepository
+│       │   └── Services/                 # PayrollService
+│       ├── Performance/
+│       │   ├── DTOs/                     # Goal, Review, Summary DTOs
+│       │   ├── Interfaces/               # IPerformanceService, IPerformanceRepository
+│       │   └── Services/                 # PerformanceService
+│       ├── Dashboard/
+│       │   ├── DTOs/                     # Stats, Headcount, Activity DTOs
+│       │   └── Interfaces/               # IDashboardService
+│       └── Reports/
+│           ├── DTOs/                     # Attendance, Payroll, Headcount Report DTOs
+│           └── Interfaces/               # IReportService
+│
+├── EMS.Domain/                          # Domain Layer
+│   ├── Common/
+│   │   └── BaseEntity.cs                # Id, CreatedAt, UpdatedAt, IsDeleted
+│   ├── Entities/
+│   │   ├── Identity/
+│   │   │   ├── AppUser.cs               # User entity
+│   │   │   └── RefreshToken.cs          # Refresh token entity
+│   │   ├── Organization/
+│   │   │   ├── Department.cs            # Department entity
+│   │   │   └── Designation.cs           # Designation entity
+│   │   ├── Employee/
+│   │   │   └── EmployeeProfile.cs        # Employee profile entity
+│   │   ├── Attendance/
+│   │   │   └── AttendanceRecord.cs      # Attendance record entity
+│   │   ├── Leave/
+│   │   │   ├── LeaveApplication.cs      # Leave application entity
+│   │   │   └── LeaveType.cs             # Leave type entity
+│   │   ├── Payroll/
+│   │   │   ├── PayrollRecord.cs         # Payroll record entity
+│   │   │   └── SalaryStructure.cs       # Salary structure entity
+│   │   └── Performance/
+│   │       ├── Goal.cs                  # Goal entity
+│   │       └── PerformanceReview.cs     # Performance review entity
+│   └── Enums/
+│       ├── UserRole.cs                  # SuperAdmin, HRAdmin, Manager, Employee
+│       ├── EmploymentStatus.cs          # Active, OnProbation, Resigned, Terminated
+│       ├── Gender.cs                     # Male, Female, Other
+│       ├── LeaveStatus.cs               # Pending, Approved, Rejected, Cancelled
+│       └── AttendanceStatus.cs          # Present, Absent, HalfDay, Holiday, OnLeave
+│
+└── EMS.Infrastructure/                   # Infrastructure Layer
+    ├── DependencyInjection.cs           # All DI registrations
+    ├── Persistence/
+    │   ├── AppDbContext.cs              # EF Core DbContext
+    │   └── Configurations/              # Fluent API configurations
+    ├── Repositories/
+    │   ├── GenericRepository.cs          # Base repository
+    │   ├── AuthRepository.cs            # Auth data access
+    │   ├── RefreshTokenRepository.cs    # Refresh token operations
+    │   ├── EmployeeRepository.cs        # Employee data access
+    │   ├── AttendanceRepository.cs      # Attendance data access
+    │   ├── LeaveRepository.cs           # Leave data access
+    │   ├── PayrollRepository.cs         # Payroll data access
+    │   ├── PerformanceRepository.cs     # Performance data access
+    │   ├── DepartmentRepository.cs      # Department data access
+    │   └── DesignationRepository.cs     # Designation data access
+    ├── Services/
+    │   ├── JwtService.cs                # JWT token generation/validation
+    │   ├── Dashboard/
+    │   │   └── DashboardService.cs      # Dashboard analytics
+    │   └── Reports/
+    │       └── ReportService.cs         # Report generation
+    ├── BackgroundServices/
+    │   └── TokenCleanupService.cs       # Background token cleanup
+    ├── Seeders/
+    │   └── SuperAdminSeeder.cs          # SuperAdmin seeding
+    └── UnitOfWork/
+        └── UnitOfWork.cs                # Transaction management
+```
+
+### Quick Code Lookup
+
+| What You Need | File Location |
+|---------------|---------------|
+| API Entry Point | `EMS.API/Program.cs` |
+| All Endpoints | `EMS.API/Controllers/v1/*.cs` |
+| Error Handling | `EMS.API/Middleware/ExceptionMiddleware.cs` |
+| Database Setup | `EMS.Infrastructure/Persistence/AppDbContext.cs` |
+| DI Configuration | `EMS.Infrastructure/DependencyInjection.cs` |
+| JWT Logic | `EMS.Infrastructure/Services/JwtService.cs` |
+| All Entities | `EMS.Domain/Entities/**/*.cs` |
+| All Enums | `EMS.Domain/Enums/*.cs` |
+| Business Logic | `EMS.Application/Modules/*/Services/*.cs` |
+| Data Access | `EMS.Infrastructure/Repositories/*.cs` |
+| Response Format | `EMS.Application/Common/DTOs/ApiResponse.cs` |
+| Auto Seeding | `EMS.Infrastructure/Seeders/SuperAdminSeeder.cs` |
+| Background Jobs | `EMS.Infrastructure/BackgroundServices/*.cs` |
+
+### All DTOs Reference
+
+| Module | DTOs |
+|--------|------|
+| **Identity** | RegisterDto, LoginDto, LogoutDto, RefreshTokenRequestDto, AuthResponseDto, UserResponseDto, ChangeRoleDto |
+| **Organization** | CreateDepartmentDto, UpdateDepartmentDto, DepartmentResponseDto, CreateDesignationDto, DesignationResponseDto |
+| **Employee** | CreateEmployeeDto, UpdateEmployeeDto, EmployeeFilterDto, EmployeeResponseDto |
+| **Attendance** | ClockInDto, ClockOutDto, ManualAttendanceDto, AttendanceFilterDto, AttendanceResponseDto, MonthlyAttendanceSummaryDto |
+| **Leave** | ApplyLeaveDto, LeaveActionDto, LeaveFilterDto, LeaveResponseDto, LeaveBalanceDto, LeaveTypeResponseDto, CreateLeaveTypeDto |
+| **Payroll** | CreateSalaryStructureDto, RunPayrollDto, PayrollFilterDto, PayrollRecordResponseDto, SalaryStructureResponseDto |
+| **Performance** | CreateGoalDto, UpdateGoalProgressDto, GoalResponseDto, CreateReviewDto, SelfCommentDto, ReviewResponseDto, PerformanceFilterDto, EmployeePerformanceSummaryDto |
+| **Dashboard** | DashboardStatsDto, DepartmentHeadcountDto, RecentActivityDto |
+| **Reports** | AttendanceReportDto, PayrollReportDto, HeadcountReportDto |
+
+### All Interfaces Reference
+
+| Module | Service Interface | Repository Interface |
+|--------|-------------------|---------------------|
+| **Identity** | IAuthService, IUserService | IAuthRepository, IRefreshTokenRepository |
+| **Organization** | IDepartmentService, IDesignationService | IDepartmentRepository, IDesignationRepository |
+| **Employee** | IEmployeeService | IEmployeeRepository |
+| **Attendance** | IAttendanceService | IAttendanceRepository |
+| **Leave** | ILeaveService | ILeaveRepository |
+| **Payroll** | IPayrollService | IPayrollRepository |
+| **Performance** | IPerformanceService | IPerformanceRepository |
+| **Dashboard** | IDashboardService | - |
+| **Reports** | IReportService | - |
+| **Core** | IJwtService | - |
+
+---
+
+*End of Documentation*

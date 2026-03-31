@@ -1,8 +1,8 @@
 using EMS.Application.Common.DTOs;
 using EMS.Application.Modules.Identity.DTOs;
 using EMS.Application.Modules.Identity.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace EMS.API.Controllers.v1;
 
@@ -39,11 +39,53 @@ public class AuthController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ApiResponse<string>.Fail("Invalid request data."));
 
-        var result = await _authService.LoginAsync(dto);
+        var ip = GetIpAddress();
+        var result = await _authService.LoginAsync(dto, ip);
 
         if (result == null)
-            return Unauthorized(ApiResponse<string>.Fail("Invalid email or password."));
+            return Unauthorized(ApiResponse<string>.Fail("Invalid credentials or account locked."));
 
         return Ok(ApiResponse<AuthResponseDto>.Ok(result, "Login successful."));
+    }
+
+    // POST api/v1/auth/refresh
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequestDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ApiResponse<string>.Fail("Invalid request data."));
+
+        var ip = GetIpAddress();
+        var result = await _authService.RefreshTokenAsync(dto.RefreshToken, ip);
+
+        if (result == null)
+            return Unauthorized(ApiResponse<string>.Fail("Invalid or expired refresh token."));
+
+        return Ok(ApiResponse<AuthResponseDto>.Ok(result, "Token refreshed."));
+    }
+
+    // POST api/v1/auth/logout
+    [HttpPost("logout")]
+    [Authorize]
+    public async Task<IActionResult> Logout([FromBody] LogoutDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ApiResponse<string>.Fail("Invalid request data."));
+
+        var result = await _authService.LogoutAsync(dto.RefreshToken);
+
+        if (!result)
+            return BadRequest(ApiResponse<string>.Fail("Invalid or already revoked token."));
+
+        return Ok(ApiResponse<string>.Ok("Logged out.", "Logout successful."));
+    }
+
+    // ── Private Helper ────────────────────────────────────────────────
+    private string GetIpAddress()
+    {
+        if (Request.Headers.TryGetValue("X-Forwarded-For", out var forwarded))
+            return forwarded.ToString();
+
+        return HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
     }
 }

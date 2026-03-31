@@ -7,7 +7,6 @@ using EMS.Domain.Entities.Payroll;
 using EMS.Domain.Entities.Performance;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace EMS.Infrastructure.Persistence;
 
 public class AppDbContext : DbContext
@@ -16,6 +15,7 @@ public class AppDbContext : DbContext
 
     // Identity
     public DbSet<AppUser> Users => Set<AppUser>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     // Organization
     public DbSet<Department> Departments => Set<Department>();
@@ -35,15 +35,13 @@ public class AppDbContext : DbContext
     public DbSet<SalaryStructure> SalaryStructures => Set<SalaryStructure>();
     public DbSet<PayrollRecord> PayrollRecords => Set<PayrollRecord>();
 
-
     // Performance
     public DbSet<Goal> Goals => Set<Goal>();
     public DbSet<PerformanceReview> PerformanceReviews => Set<PerformanceReview>();
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Saari configurations ek saath apply hogi
+        // Apply all configurations from the current assembly
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }

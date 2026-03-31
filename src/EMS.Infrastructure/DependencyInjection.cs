@@ -15,19 +15,18 @@ using EMS.Application.Modules.Payroll.Services;
 using EMS.Application.Modules.Performance.Interfaces;
 using EMS.Application.Modules.Performance.Services;
 using EMS.Application.Modules.Reports.Interfaces;
+using EMS.Infrastructure.BackgroundServices;  // NEW
 using EMS.Infrastructure.Persistence;
 using EMS.Infrastructure.Repositories;
 using EMS.Infrastructure.Services;
+using EMS.Infrastructure.Services.Dashboard;
+using EMS.Infrastructure.Services.Reports;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using EMS.Infrastructure.Services.Dashboard;
-using EMS.Infrastructure.Services.Reports;
-
-
 
 namespace EMS.Infrastructure;
 
@@ -47,8 +46,9 @@ public static class DependencyInjection
         // UnitOfWork
         services.AddScoped<EMS.Infrastructure.UnitOfWork.UnitOfWork>();
 
-        // ── Repositories ─────────────────────────────────────────
+        // ── Repositories ──────────────────────────────────────────
         services.AddScoped<IAuthRepository, AuthRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>(); // NEW
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         services.AddScoped<IDesignationRepository, DesignationRepository>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
@@ -57,7 +57,7 @@ public static class DependencyInjection
         services.AddScoped<IPayrollRepository, PayrollRepository>();
         services.AddScoped<IPerformanceRepository, PerformanceRepository>();
 
-        // ── Services ─────────────────────────────────────────────
+        // ── Services ──────────────────────────────────────────────
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IJwtService, JwtService>();
@@ -71,8 +71,12 @@ public static class DependencyInjection
         services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<IReportService, ReportService>();
 
+        // ── Background Services ───────────────────────────────────
+        services.AddHostedService<TokenCleanupService>(); // NEW
+
         // ── JWT Authentication ────────────────────────────────────
-        var secret = configuration["JwtSettings:Secret"]!;
+        var secret = configuration["JwtSettings:Secret"]
+            ?? throw new InvalidOperationException("JWT Secret is required.");
         var key = Encoding.UTF8.GetBytes(secret);
 
         services.AddAuthentication(options =>
@@ -92,7 +96,8 @@ public static class DependencyInjection
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = configuration["JwtSettings:Issuer"],
                 ValidAudience = configuration["JwtSettings:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(key)
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ClockSkew = TimeSpan.Zero  // NEW — strict expiry enforcement
             };
         });
 

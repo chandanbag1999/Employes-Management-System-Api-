@@ -21,6 +21,13 @@ public class AuthRepository : IAuthRepository
     public async Task<AppUser?> GetByIdAsync(int id)
         => await _context.Users.FindAsync(id);
 
+    // NEW — eager loads RefreshTokens
+    // Login aur refresh flow mein zarurat hoti hai
+    public async Task<AppUser?> GetByIdWithTokensAsync(int id)
+        => await _context.Users
+            .Include(u => u.RefreshTokens)
+            .FirstOrDefaultAsync(u => u.Id == id);
+
     public async Task<IEnumerable<AppUser>> GetAllAsync()
         => await _context.Users
             .OrderBy(u => u.CreatedAt)
