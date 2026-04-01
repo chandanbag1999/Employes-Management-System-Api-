@@ -1453,22 +1453,37 @@ Total estimate: ~200-300MB RAM comfortable
 
 ## 15. Known Limitations & Future Improvements
 
-### Current Limitations
+### Current Implementation Status
 
 ```
-🔴 CRITICAL:
-- No refresh token — JWT expires → full re-login
+✅ IMPLEMENTED & WORKING:
+- Refresh token mechanism — Silent token refresh with queue system
+- Background token cleanup service — Expired tokens auto-deleted
+- Global exception middleware — All errors centralized
+- Soft delete with query filters — Designations + Departments
+- Dashboard service with real-time stats
+- Report generation service (Attendance, Payroll, Headcount)
+- Auto SuperAdmin seeding on startup
+- Employee code auto-generation (EMP001, EMP002, etc.)
+- Leave overlap detection
+- Duplicate attendance prevention (EmployeeId + Date unique)
+- Payroll record uniqueness (EmployeeId + Month + Year)
+- Performance review cycle uniqueness
+
+🔴 CRITICAL LIMITATIONS:
 - No rate limiting — API abuse possible
 - No input sanitization middleware (XSS prevention)
-- CORS too open in development mode
+- CORS too open in development mode (hardcoded to localhost:8080 only)
 
-🟡 IMPORTANT:
+🟡 IMPORTANT LIMITATIONS:
 - Tax calculation simplified (flat 10%) — not real Indian tax slabs
 - No email notifications (leave approval, payroll, etc.)
 - No file upload (employee photo, documents)
 - No audit log — who changed what when
 - Working days calculation doesn't include holidays
 - No multi-company support
+- Integration tests directory empty (xUnit setup ready, but no test cases)
+- Performance module unit tests missing
 
 🟢 NICE TO HAVE:
 - Export to Excel/PDF for reports
@@ -1482,25 +1497,32 @@ Total estimate: ~200-300MB RAM comfortable
 ### Planned Improvements (Future Versions)
 
 #### v1.1 (Short Term)
-- [ ] Refresh token implementation
+- [x] ✅ Refresh token implementation — COMPLETED
 - [ ] Rate limiting (per user, per endpoint)
 - [ ] Email service integration (SMTP/SendGrid)
 - [ ] Holiday calendar management
 - [ ] Employee document upload
+- [ ] Input sanitization middleware (XSS prevention)
 
 #### v1.2 (Medium Term)
-- [ ] Real tax calculation with Indian slabs
-- [ ] Audit log for all changes
-- [ ] Bulk operations (bulk employee update)
+- [ ] Real tax calculation with Indian tax slabs (progressive rates)
+- [ ] Audit log for all changes (who, what, when, why)
+- [ ] Bulk operations (bulk employee import/update)
 - [ ] Excel/PDF export for reports
-- [ ] Integration tests suite
+- [ ] Complete integration tests suite
+- [ ] Performance review module unit tests
+- [ ] API documentation with Swagger UI (in addition to Scalar)
 
 #### v2.0 (Long Term)
 - [ ] Multi-tenant support (multiple companies)
-- [ ] Microservices architecture
-- [ ] Event-driven payroll processing (message queue)
-- [ ] Mobile API optimizations
+- [ ] Microservices architecture (separate services per domain)
+- [ ] Event-driven payroll processing (message queue - RabbitMQ/Azure Service Bus)
+- [ ] Employee org chart visualization API
+- [ ] Mobile API optimizations (data compression, caching)
 - [ ] Real-time notifications (SignalR/WebSocket)
+- [ ] Holiday calendar with working days automation
+- [ ] Shift management and shift-based attendance
+- [ ] Overtime calculation and compensation
 
 ---
 
@@ -1517,8 +1539,11 @@ Total estimate: ~200-300MB RAM comfortable
 - EF Core 10 + PostgreSQL setup
 - Generic Repository + UnitOfWork pattern
 - Global Exception Middleware
-- JWT Authentication setup
-- BCrypt password hashing
+- JWT Authentication setup with refresh token mechanism
+- Silent token refresh with request queuing for concurrent requests
+- Background service for auto-cleanup of expired refresh tokens
+- BCrypt password hashing with workFactor: 12
+- Auto SuperAdmin seeding on startup (superadmin@ems.com)
 
 #### 👤 Identity Module (Day 3)
 - User registration with role assignment
@@ -1527,10 +1552,14 @@ Total estimate: ~200-300MB RAM comfortable
 - User deactivation
 
 #### 🏢 Organization Module (Day 4)
-- Department CRUD with pagination + search
-- Department delete guard (has employees check)
+- Department CRUD with pagination + search + sort
+- Department delete guard (prevents deletion if employees assigned)
+- Soft delete implementation for departments
 - Designation CRUD with department filter
-- Unique name constraints
+- Soft delete + Restore for designations (data recovery feature)
+- Purge old deleted designations (>12 months)
+- Unique name constraints per department
+- Query filters to exclude soft-deleted records
 
 #### 👥 Employee Lifecycle Module (Day 5)
 - Employee CRUD with auto EmployeeCode (EMP001...)
@@ -1573,23 +1602,49 @@ Total estimate: ~200-300MB RAM comfortable
 - Employee performance summary
 
 #### 📊 Dashboard + Reports (Day 10)
-- Real-time dashboard stats
-- Department headcount breakdown
-- Recent activity feed
-- Attendance report (employee-wise)
-- Payroll report (department-wise)
-- Headcount report (gender + status breakdown)
+- Real-time dashboard stats (employee count, attendance, on-leave)
+- Department headcount breakdown with API
+- Recent activity feed with timestamps
+- Attendance report (employee-wise with daily breakdown)
+- Payroll report (department-wise salary analysis)
+- Headcount report (gender + employment status breakdown)
+- Aggregate analytics service with pagination support
 
 #### 🧪 Unit Tests
-- xUnit + Moq + FluentAssertions setup
-- AuthService tests (7 cases)
-- DepartmentService tests (7 cases)
-- LeaveService tests (7 cases)
-- EmployeeService tests (5 cases)
+- xUnit + Moq + FluentAssertions setup with Coverlet code coverage
+- AuthService tests (registration, login, failed attempts, lockout - 7 cases)
+- DepartmentService tests (CRUD, delete guards, soft delete - 7 cases)
+- EmployeeService tests (CRUD, auto code generation, filters - 5 cases)
+- LeaveService tests (balance validation, overlap detection, workflow - 7 cases)
+- TestDataBuilder helper for consistent test data
+- Test coverage: ~26 test cases covering core business logic
 
 ---
 
-### How to Add to This Changelog
+### Implementation Notes
+
+#### Refresh Token Architecture (v1.0.0)
+The refresh token mechanism implemented provides enterprise-grade token management:
+
+**Features:**
+- **Silent Refresh**: When access token expires, automatically rotates without user re-login
+- **Request Queuing**: During token refresh, concurrent requests are queued and re-executed with new token
+- **Dual Token System**: Access token (15 min) + Refresh token (7 days) stored separately
+- **Background Cleanup**: TokenCleanupService removes expired tokens every hour
+- **Automatic Logout**: On refresh token expiration or failure, user is auto-logged out
+
+**Security Benefits:**
+- Short-lived access tokens reduce exposure window
+- Refresh token stored securely in database (not in JWT)
+- Automatic cleanup prevents token table bloat
+- Failed refresh triggers immediate logout (compromised token = logout)
+
+**Frontend Integration:**
+- Axios interceptor catches 401, queues requests, refreshes silently
+- User experiences smooth UX — no interruption on token refresh
+- Fallback: After multiple failures, redirect to login
+
+---
 
 Jab bhi koi change karo, neeche format mein add karo:
 
@@ -1679,7 +1734,7 @@ dotnet build
 
 ---
 
-*Last Updated: March 2026 | Version: 1.0.0*
+*Last Updated: April 2026 | Version: 1.0.0*
 *Document Owner: Backend Development Team*
 
 > **Note:** Yeh document ek living document hai. Har feature, bug fix, ya architectural decision ke saath isse update karo. Future self aur team members ko bahut help milegi.

@@ -4,10 +4,10 @@ namespace EMS.Application.Modules.Attendance.DTOs;
 
 public class ClockInDto
 {
-    [Required]
-    public int EmployeeId { get; set; }
+    // ✅ Ab required nahi — JWT se fill hoga
+    public int? EmployeeId { get; set; }
 
-    // Optional — agar manually time dena ho (admin ke liye)
+    // Optional — admin manually time de sakta hai
     public DateTime? ClockInTime { get; set; }
 
     [MaxLength(200)]

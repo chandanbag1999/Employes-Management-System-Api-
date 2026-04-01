@@ -1,0 +1,27 @@
+Using launch settings from D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.API\Properties\launchSettings.json...
+Building...
+info: Microsoft.EntityFrameworkCore.Migrations[20405]
+      No migrations were applied. The database is already up to date.
+info: EMS.Infrastructure.BackgroundServices.AutoAbsentMarkingService[0]
+      AutoAbsentMarkingService started.
+info: EMS.Infrastructure.BackgroundServices.AutoAbsentMarkingService[0]
+      Next auto-absent run at 02-Apr-2026 23:00 IST (in 1365 minutes)
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5000
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.API
+info: EMS.Infrastructure.BackgroundServices.TokenCleanupService[0]
+      Token cleanup completed at 04/01/2026 18:44:53
+warn: Microsoft.AspNetCore.Server.Kestrel[0]
+      Connection processing ended abnormally.
+      System.InvalidOperationException: Reading is already in progress.
+         at System.IO.Pipelines.ThrowHelper.ThrowInvalidOperationException_AlreadyReading()
+         at System.IO.Pipelines.Pipe.GetReadResult(ReadResult& result)
+         at System.IO.Pipelines.Pipe.ReadAsync(CancellationToken token)
+         at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.Http1Connection.BeginRead(ValueTask`1& awaitable)
+         at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication`1 application)
+         at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequestsAsync[TContext](IHttpApplication`1 application)

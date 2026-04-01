@@ -1,0 +1,18 @@
+Using launch settings from D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.API\Properties\launchSettings.json...
+Building...
+info: Microsoft.EntityFrameworkCore.Migrations[20405]
+      No migrations were applied. The database is already up to date.
+info: EMS.Infrastructure.BackgroundServices.AutoAbsentMarkingService[0]
+      AutoAbsentMarkingService started.
+info: EMS.Infrastructure.BackgroundServices.AutoAbsentMarkingService[0]
+      Next auto-absent run at 02-Apr-2026 23:00 IST (in 1310 minutes)
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5185
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.API
+info: EMS.Infrastructure.BackgroundServices.TokenCleanupService[0]
+      Token cleanup completed at 04/01/2026 19:39:44

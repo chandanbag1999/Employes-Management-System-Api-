@@ -4,8 +4,8 @@ namespace EMS.Application.Modules.Attendance.DTOs;
 
 public class ClockOutDto
 {
-    [Required]
-    public int EmployeeId { get; set; }
+    // ✅ Ab required nahi — JWT se fill hoga
+    public int? EmployeeId { get; set; }
 
     public DateTime? ClockOutTime { get; set; }
 

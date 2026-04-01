@@ -36,7 +36,6 @@ public class DepartmentService : IDepartmentService
     public async Task<(DepartmentResponseDto? result, string? error)> CreateAsync(
         CreateDepartmentDto dto)
     {
-        // Name unique check
         if (await _departmentRepository.NameExistsAsync(dto.Name))
             return (null, "Department name already exists.");
 
@@ -85,6 +84,26 @@ public class DepartmentService : IDepartmentService
         return deleted ? (true, null) : (false, "Delete failed.");
     }
 
+    // ── Soft Delete Management ──────────────────────────────────────
+
+    public async Task<IEnumerable<DepartmentResponseDto>> GetDeletedAsync()
+    {
+        var deleted = await _departmentRepository.GetDeletedAsync();
+        return deleted.Select(MapToDto);
+    }
+
+    public async Task<(bool success, string? error)> RestoreAsync(int id)
+    {
+        var restored = await _departmentRepository.RestoreAsync(id);
+        return restored
+            ? (true, null)
+            : (false, "Department not found in deleted items.");
+    }
+
+    public async Task<int> PurgeAsync(int months)
+        => await _departmentRepository.PurgeAsync(months);
+
+    // ── Mapper ──────────────────────────────────────────────────────
     private static DepartmentResponseDto MapToDto(Department d) => new()
     {
         Id = d.Id,

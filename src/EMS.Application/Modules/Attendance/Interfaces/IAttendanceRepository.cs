@@ -9,9 +9,18 @@ public interface IAttendanceRepository
     Task<PaginatedResult<AttendanceRecord>> GetAllAsync(AttendanceFilterDto filter);
     Task<AttendanceRecord?> GetByIdAsync(int id);
     Task<AttendanceRecord?> GetTodayRecordAsync(int employeeId);
-    Task<IEnumerable<AttendanceRecord>> GetMonthlyAsync(int employeeId, int month, int year);
+
+    // ✅ NEW
+    Task<AttendanceRecord?> GetByEmployeeAndDateAsync(int employeeId, DateTime date);
+
+    Task<IEnumerable<AttendanceRecord>> GetMonthlyAsync(
+        int employeeId, int month, int year);
+
     Task<AttendanceRecord> CreateAsync(AttendanceRecord record);
     Task<AttendanceRecord?> UpdateAsync(int id, AttendanceRecord record);
     Task<bool> HasClockedInTodayAsync(int employeeId);
     Task<bool> HasClockedOutTodayAsync(int employeeId);
+
+    // ✅ NEW — Auto absent ke liye
+    Task<int> MarkAbsentForDateAsync(DateTime date);
 }

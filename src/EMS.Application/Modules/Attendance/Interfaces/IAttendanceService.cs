@@ -5,20 +5,24 @@ namespace EMS.Application.Modules.Attendance.Interfaces;
 
 public interface IAttendanceService
 {
-    // Employee actions
-    Task<(AttendanceResponseDto? result, string? error)> ClockInAsync(ClockInDto dto);
-    Task<(AttendanceResponseDto? result, string? error)> ClockOutAsync(ClockOutDto dto);
+    Task<(AttendanceResponseDto? result, string? error)> ClockInAsync(
+        ClockInDto dto, int employeeId);
 
-    // Read operations
+    Task<(AttendanceResponseDto? result, string? error)> ClockOutAsync(
+        ClockOutDto dto, int employeeId);
+
     Task<PaginatedResult<AttendanceResponseDto>> GetAllAsync(AttendanceFilterDto filter);
+
     Task<AttendanceResponseDto?> GetByIdAsync(int id);
+
     Task<AttendanceResponseDto?> GetTodayRecordAsync(int employeeId);
 
-    // Monthly summary
     Task<MonthlyAttendanceSummaryDto?> GetMonthlySummaryAsync(
         int employeeId, int month, int year);
 
-    // Admin operations
     Task<(AttendanceResponseDto? result, string? error)> MarkManualAsync(
         ManualAttendanceDto dto);
+
+    // ✅ NEW — Auto absent marking ke liye
+    Task<int> MarkAbsentForDateAsync(DateTime date);
 }

@@ -6,7 +6,9 @@ public class AttendanceFilterDto
     public int PageSize { get; set; } = 31; // 1 month default
     public int? EmployeeId { get; set; }
     public int? DepartmentId { get; set; }
-    public DateTime? FromDate { get; set; }
-    public DateTime? ToDate { get; set; }
+    // ✅ FIX: DateTime? ki jagah DateOnly use karo
+    // PostgreSQL timestamp issue completely solve
+    public DateOnly? FromDate { get; set; }
+    public DateOnly? ToDate { get; set; }
     public string? Status { get; set; }  // "Present", "Absent", etc.
 }

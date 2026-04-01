@@ -15,18 +15,20 @@ public class AttendanceService : IAttendanceService
         _attendanceRepo = attendanceRepo;
     }
 
+    // ✅ employeeId ab parameter se aata hai (Controller JWT se dega)
     public async Task<(AttendanceResponseDto? result, string? error)> ClockInAsync(
-        ClockInDto dto)
+        ClockInDto dto, int employeeId)
     {
         // Already clocked in today?
-        if (await _attendanceRepo.HasClockedInTodayAsync(dto.EmployeeId))
+        if (await _attendanceRepo.HasClockedInTodayAsync(employeeId))
             return (null, "Already clocked in today.");
 
-        var now = dto.ClockInTime ?? DateTime.UtcNow;
+        // ✅ IST time use karo
+        var now = dto.ClockInTime ?? GetIstNow();
 
         var record = new AttendanceRecord
         {
-            EmployeeId = dto.EmployeeId,
+            EmployeeId = employeeId,
             Date = now.Date,
             ClockIn = now.TimeOfDay,
             Status = AttendanceStatus.Present,
@@ -37,18 +39,19 @@ public class AttendanceService : IAttendanceService
         return (MapToDto(created), null);
     }
 
+    // ✅ employeeId ab parameter se aata hai
     public async Task<(AttendanceResponseDto? result, string? error)> ClockOutAsync(
-        ClockOutDto dto)
+        ClockOutDto dto, int employeeId)
     {
-        var todayRecord = await _attendanceRepo.GetTodayRecordAsync(dto.EmployeeId);
+        var todayRecord = await _attendanceRepo.GetTodayRecordAsync(employeeId);
 
         if (todayRecord == null)
-            return (null, "No clock-in found for today.");
+            return (null, "No clock-in found for today. Please clock in first.");
 
-        if (await _attendanceRepo.HasClockedOutTodayAsync(dto.EmployeeId))
+        if (await _attendanceRepo.HasClockedOutTodayAsync(employeeId))
             return (null, "Already clocked out today.");
 
-        var now = dto.ClockOutTime ?? DateTime.UtcNow;
+        var now = dto.ClockOutTime ?? GetIstNow();
         var clockOut = now.TimeOfDay;
 
         // Working hours calculate karo
@@ -56,10 +59,13 @@ public class AttendanceService : IAttendanceService
         if (todayRecord.ClockIn.HasValue)
         {
             var diff = clockOut - todayRecord.ClockIn.Value;
-            workingHours = Math.Round(diff.TotalHours, 2);
+            // Negative nahi hona chahiye
+            workingHours = diff.TotalHours > 0
+                ? Math.Round(diff.TotalHours, 2)
+                : 0;
         }
 
-        // HalfDay check — agar 4 ghante se kam kaam kiya
+        // HalfDay check — 4 ghante se kam = HalfDay
         var status = workingHours >= 4
             ? AttendanceStatus.Present
             : AttendanceStatus.HalfDay;
@@ -74,7 +80,7 @@ public class AttendanceService : IAttendanceService
 
         var updated = await _attendanceRepo.UpdateAsync(todayRecord.Id, todayRecord);
         return updated == null
-            ? (null, "Clock out failed.")
+            ? (null, "Clock out failed. Please try again.")
             : (MapToDto(updated), null);
     }
 
@@ -141,14 +147,34 @@ public class AttendanceService : IAttendanceService
     {
         var date = dto.Date.Date;
 
-        // Working hours calculate karo agar dono time hain
+        // ✅ Already exists check karo
+        var existing = await _attendanceRepo.GetByEmployeeAndDateAsync(
+            dto.EmployeeId, date);
+
         double? workingHours = null;
         if (dto.ClockIn.HasValue && dto.ClockOut.HasValue)
         {
             var diff = dto.ClockOut.Value - dto.ClockIn.Value;
-            workingHours = Math.Round(diff.TotalHours, 2);
+            workingHours = diff.TotalHours > 0
+                ? Math.Round(diff.TotalHours, 2)
+                : 0;
         }
 
+        if (existing != null)
+        {
+            // ✅ Update existing record
+            existing.ClockIn = dto.ClockIn ?? existing.ClockIn;
+            existing.ClockOut = dto.ClockOut ?? existing.ClockOut;
+            existing.Status = dto.Status;
+            existing.WorkingHours = workingHours ?? existing.WorkingHours;
+            existing.Remarks = dto.Remarks ?? existing.Remarks;
+            existing.UpdatedAt = DateTime.UtcNow;
+
+            var updated = await _attendanceRepo.UpdateAsync(existing.Id, existing);
+            return (MapToDto(updated!), null);
+        }
+
+        // New record banao
         var record = new AttendanceRecord
         {
             EmployeeId = dto.EmployeeId,
@@ -162,6 +188,27 @@ public class AttendanceService : IAttendanceService
 
         var created = await _attendanceRepo.CreateAsync(record);
         return (MapToDto(created), null);
+    }
+
+    // ✅ NEW — Auto absent marking
+    public async Task<int> MarkAbsentForDateAsync(DateTime date)
+    {
+        // Weekend check (Saturday = 6, Sunday = 0)
+        if (date.DayOfWeek == DayOfWeek.Saturday ||
+            date.DayOfWeek == DayOfWeek.Sunday)
+            return 0;
+
+        return await _attendanceRepo.MarkAbsentForDateAsync(date);
+    }
+
+    // ✅ IST helper
+    private static DateTime GetIstNow()
+    {
+        var istZone = TimeZoneInfo.FindSystemTimeZoneById(
+            OperatingSystem.IsWindows()
+                ? "India Standard Time"
+                : "Asia/Kolkata");
+        return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, istZone);
     }
 
     private static AttendanceResponseDto MapToDto(AttendanceRecord r) => new()

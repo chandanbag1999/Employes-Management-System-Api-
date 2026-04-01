@@ -89,4 +89,46 @@ public class DepartmentRepository : IDepartmentRepository
         => await _context.Departments.AnyAsync(d =>
             d.Name.ToLower() == name.ToLower() &&
             (excludeId == null || d.Id != excludeId));
+
+    // ── Soft Delete Management ──────────────────────────────────────
+    public async Task<IEnumerable<Department>> GetDeletedAsync()
+        => await _context.Departments
+            .IgnoreQueryFilters()
+            .Include(d => d.Employees)
+            .Where(d => d.IsDeleted)
+            .OrderByDescending(d => d.UpdatedAt)
+            .ToListAsync();
+
+    // Restore — IsDeleted = false karo
+    public async Task<bool> RestoreAsync(int id)
+    {
+        var dept = await _context.Departments
+            .IgnoreQueryFilters()
+            .FirstOrDefaultAsync(d => d.Id == id && d.IsDeleted);
+
+        if (dept == null) return false;
+
+        dept.IsDeleted = false;
+        dept.UpdatedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    // Purge — permanently delete records older than X months
+    public async Task<int> PurgeAsync(int months)
+    {
+        var cutoff = DateTime.UtcNow.AddMonths(-months);
+
+        var oldDeleted = await _context.Departments
+            .IgnoreQueryFilters()
+            .Where(d => d.IsDeleted && d.UpdatedAt < cutoff)
+            .ToListAsync();
+
+        if (oldDeleted.Count == 0) return 0;
+
+        _context.Departments.RemoveRange(oldDeleted);
+        await _context.SaveChangesAsync();
+
+        return oldDeleted.Count;
+    }
 }

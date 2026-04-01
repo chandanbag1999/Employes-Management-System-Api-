@@ -87,6 +87,7 @@ public class EmployeeService : IEmployeeService
         existing.DesignationId = dto.DesignationId;
         existing.ReportingManagerId = dto.ReportingManagerId;
         existing.Status = dto.Status;
+        existing.UserId = dto.UserId;  // ✅ NEW: Link employee to user account
         existing.UpdatedAt = DateTime.UtcNow;
 
         var updated = await _employeeRepository.UpdateAsync(id, existing);

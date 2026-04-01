@@ -10,3 +10,15 @@ D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New fold
 D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.Domain\obj\Release\net10.0\refint\EMS.Domain.dll
 D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.Domain\obj\Release\net10.0\EMS.Domain.pdb
 D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.Domain\obj\Release\net10.0\ref\EMS.Domain.dll
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Domain\bin\Release\net10.0\EMS.Domain.deps.json
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Domain\bin\Release\net10.0\EMS.Domain.dll
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Domain\bin\Release\net10.0\EMS.Domain.pdb
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Domain\obj\Release\net10.0\EMS.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Domain\obj\Release\net10.0\EMS.Domain.AssemblyInfoInputs.cache
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Domain\obj\Release\net10.0\EMS.Domain.AssemblyInfo.cs
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Domain\obj\Release\net10.0\EMS.Domain.csproj.CoreCompileInputs.cache
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Domain\obj\Release\net10.0\EMS.Domain.sourcelink.json
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Domain\obj\Release\net10.0\EMS.Domain.dll
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Domain\obj\Release\net10.0\refint\EMS.Domain.dll
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Domain\obj\Release\net10.0\EMS.Domain.pdb
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Domain\obj\Release\net10.0\ref\EMS.Domain.dll

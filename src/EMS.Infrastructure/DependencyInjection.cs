@@ -15,7 +15,7 @@ using EMS.Application.Modules.Payroll.Services;
 using EMS.Application.Modules.Performance.Interfaces;
 using EMS.Application.Modules.Performance.Services;
 using EMS.Application.Modules.Reports.Interfaces;
-using EMS.Infrastructure.BackgroundServices;  // NEW
+using EMS.Infrastructure.BackgroundServices;  
 using EMS.Infrastructure.Persistence;
 using EMS.Infrastructure.Repositories;
 using EMS.Infrastructure.Services;
@@ -72,7 +72,10 @@ public static class DependencyInjection
         services.AddScoped<IReportService, ReportService>();
 
         // ── Background Services ───────────────────────────────────
-        services.AddHostedService<TokenCleanupService>(); // NEW
+        services.AddHostedService<TokenCleanupService>();
+
+        // ✅ NEW — Auto absent marking
+        services.AddHostedService<AutoAbsentMarkingService>();
 
         // ── JWT Authentication ────────────────────────────────────
         var secret = configuration["JwtSettings:Secret"]

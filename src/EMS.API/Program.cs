@@ -5,6 +5,9 @@ using EMS.Infrastructure.Seeders;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
+// ✅ FIX: PostgreSQL ko DateTime.Unspecified accept karana
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 // CORS

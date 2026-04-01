@@ -34,4 +34,7 @@ public class UpdateEmployeeDto
     public int? ReportingManagerId { get; set; }
 
     public EmploymentStatus Status { get; set; }
+
+    // ✅ NEW: Link employee to a user account (for attendance, etc.)
+    public int? UserId { get; set; }
 }

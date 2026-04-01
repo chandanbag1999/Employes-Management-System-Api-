@@ -10,4 +10,9 @@ public interface IDepartmentService
     Task<(DepartmentResponseDto? result, string? error)> CreateAsync(CreateDepartmentDto dto);
     Task<(DepartmentResponseDto? result, string? error)> UpdateAsync(int id, UpdateDepartmentDto dto);
     Task<(bool success, string? error)> DeleteAsync(int id);
+
+    // ── Soft Delete Management ──────────────────────────────────────
+    Task<IEnumerable<DepartmentResponseDto>> GetDeletedAsync();
+    Task<(bool success, string? error)> RestoreAsync(int id);
+    Task<int> PurgeAsync(int months);
 }

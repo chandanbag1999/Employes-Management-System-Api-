@@ -18,7 +18,7 @@ public class DepartmentsController : ControllerBase
         _service = service;
     }
 
-    // GET api/v1/departments?page=1&pageSize=10&search=eng
+    // GET api/v1/departments
     [HttpGet]
     public async Task<IActionResult> GetAll(
         [FromQuery] int page = 1,
@@ -27,6 +27,16 @@ public class DepartmentsController : ControllerBase
     {
         var result = await _service.GetAllAsync(page, pageSize, search);
         return Ok(ApiResponse<PaginatedResult<DepartmentResponseDto>>.Ok(result));
+    }
+
+    // GET api/v1/departments/deleted
+    // SuperAdmin only — deleted departments dekhna
+    [HttpGet("deleted")]
+    [Authorize(Roles = "SuperAdmin")]
+    public async Task<IActionResult> GetDeleted()
+    {
+        var result = await _service.GetDeletedAsync();
+        return Ok(ApiResponse<IEnumerable<DepartmentResponseDto>>.Ok(result));
     }
 
     // GET api/v1/departments/5
@@ -44,7 +54,8 @@ public class DepartmentsController : ControllerBase
     [Authorize(Roles = "SuperAdmin,HRAdmin")]
     public async Task<IActionResult> Create([FromBody] CreateDepartmentDto dto)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
+        if (!ModelState.IsValid)
+            return BadRequest(ApiResponse<string>.Fail("Invalid request data."));
 
         var (result, error) = await _service.CreateAsync(dto);
         if (error != null)
@@ -60,7 +71,8 @@ public class DepartmentsController : ControllerBase
     [Authorize(Roles = "SuperAdmin,HRAdmin")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateDepartmentDto dto)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
+        if (!ModelState.IsValid)
+            return BadRequest(ApiResponse<string>.Fail("Invalid request data."));
 
         var (result, error) = await _service.UpdateAsync(id, dto);
         if (error != null)
@@ -82,6 +94,30 @@ public class DepartmentsController : ControllerBase
                 ? NotFound(ApiResponse<string>.Fail(error))
                 : BadRequest(ApiResponse<string>.Fail(error));
 
-        return Ok(ApiResponse<string>.Ok("Deleted", "Department deleted."));
+        return Ok(ApiResponse<string>.Ok("Deleted", "Department soft deleted."));
+    }
+
+    // POST api/v1/departments/5/restore
+    // SuperAdmin only — deleted department restore karna
+    [HttpPost("{id}/restore")]
+    [Authorize(Roles = "SuperAdmin")]
+    public async Task<IActionResult> Restore(int id)
+    {
+        var (success, error) = await _service.RestoreAsync(id);
+        if (!success)
+            return NotFound(ApiResponse<string>.Fail(error!));
+
+        return Ok(ApiResponse<string>.Ok("Restored", "Department restored successfully."));
+    }
+
+    // DELETE api/v1/departments/purge?months=12
+    // SuperAdmin only — permanently delete old soft-deleted departments
+    [HttpDelete("purge")]
+    [Authorize(Roles = "SuperAdmin")]
+    public async Task<IActionResult> Purge([FromQuery] int months = 12)
+    {
+        var count = await _service.PurgeAsync(months);
+        return Ok(ApiResponse<int>.Ok(count,
+            $"Purged {count} departments deleted more than {months} months ago."));
     }
 }

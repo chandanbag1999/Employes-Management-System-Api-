@@ -18,3 +18,23 @@ D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New fold
 D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.Infrastructure\obj\Release\net10.0\EMS.Infrastructure.pdb
 D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.Infrastructure\obj\Release\net10.0\EMS.Infrastructure.genruntimeconfig.cache
 D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.Infrastructure\obj\Release\net10.0\ref\EMS.Infrastructure.dll
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\bin\Release\net10.0\EMS.Infrastructure.deps.json
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\bin\Release\net10.0\EMS.Infrastructure.runtimeconfig.json
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\bin\Release\net10.0\EMS.Infrastructure.dll
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\bin\Release\net10.0\EMS.Infrastructure.pdb
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\bin\Release\net10.0\EMS.Application.dll
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\bin\Release\net10.0\EMS.Domain.dll
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\bin\Release\net10.0\EMS.Application.pdb
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\bin\Release\net10.0\EMS.Domain.pdb
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\obj\Release\net10.0\EMS.Infrastructure.csproj.AssemblyReference.cache
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\obj\Release\net10.0\EMS.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\obj\Release\net10.0\EMS.Infrastructure.AssemblyInfoInputs.cache
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\obj\Release\net10.0\EMS.Infrastructure.AssemblyInfo.cs
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\obj\Release\net10.0\EMS.Infrastructure.csproj.CoreCompileInputs.cache
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\obj\Release\net10.0\EMS.Infrastructure.sourcelink.json
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\obj\Release\net10.0\EMS.Infr.CB012292.Up2Date
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\obj\Release\net10.0\EMS.Infrastructure.dll
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\obj\Release\net10.0\refint\EMS.Infrastructure.dll
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\obj\Release\net10.0\EMS.Infrastructure.pdb
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\obj\Release\net10.0\EMS.Infrastructure.genruntimeconfig.cache
+D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Infrastructure\obj\Release\net10.0\ref\EMS.Infrastructure.dll
