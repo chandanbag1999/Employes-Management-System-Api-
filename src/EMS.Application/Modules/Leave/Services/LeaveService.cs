@@ -1,6 +1,8 @@
 using EMS.Application.Common.DTOs;
+using EMS.Application.Modules.Attendance.Interfaces;
 using EMS.Application.Modules.Leave.DTOs;
 using EMS.Application.Modules.Leave.Interfaces;
+using EMS.Domain.Entities.Attendance;
 using EMS.Domain.Entities.Leave;
 using EMS.Domain.Enums;
 
@@ -9,10 +11,14 @@ namespace EMS.Application.Modules.Leave.Services;
 public class LeaveService : ILeaveService
 {
     private readonly ILeaveRepository _leaveRepo;
+    private readonly IAttendanceRepository _attendanceRepo;
 
-    public LeaveService(ILeaveRepository leaveRepo)
+    public LeaveService(
+        ILeaveRepository leaveRepo,
+        IAttendanceRepository attendanceRepo)
     {
         _leaveRepo = leaveRepo;
+        _attendanceRepo = attendanceRepo;
     }
 
     public async Task<(LeaveResponseDto? result, string? error)> ApplyAsync(
@@ -87,9 +93,56 @@ public class LeaveService : ILeaveService
         var updated = await _leaveRepo.UpdateStatusAsync(
             id, newStatus, dto.ActionById, dto.RejectionReason);
 
-        return updated == null
-            ? (null, "Action failed.")
-            : (MapToDto(updated), null);
+        if (updated == null)
+            return (null, "Action failed.");
+
+        // ✅ Leave approved → Attendance mein OnLeave mark karo
+        if (dto.IsApproved)
+            await SyncLeaveToAttendanceAsync(application);
+
+        return (MapToDto(updated), null);
+    }
+
+    private async Task SyncLeaveToAttendanceAsync(LeaveApplication leave)
+    {
+        var current = leave.FromDate;
+        while (current.Date <= leave.ToDate.Date)
+        {
+            var date = current.Date;
+
+            // Weekend skip
+            if (date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
+            {
+                current = current.AddDays(1);
+                continue;
+            }
+
+            // Check if record already exists
+            var existing = await _attendanceRepo.GetByEmployeeAndDateAsync(
+                leave.EmployeeId, date);
+
+            if (existing == null)
+            {
+                //  Naya record banao — OnLeave
+                await _attendanceRepo.CreateAsync(new AttendanceRecord
+                {
+                    EmployeeId = leave.EmployeeId,
+                    Date = date,
+                    Status = AttendanceStatus.OnLeave,
+                    Remarks = leave.Reason
+                });
+            }
+            else if (!existing.ClockIn.HasValue)
+            {
+                // Existing record hai par actual clock-in nahi — update to OnLeave
+                existing.Status = AttendanceStatus.OnLeave;
+                existing.Remarks = $"Approved leave: {leave.Reason}";
+                existing.UpdatedAt = DateTime.UtcNow;
+                await _attendanceRepo.UpdateAsync(existing.Id, existing);
+            }
+
+            current = current.AddDays(1);
+        }
     }
 
     public async Task<(bool success, string? error)> CancelAsync(

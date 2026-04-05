@@ -17,6 +17,8 @@ public interface IPayrollService
     Task<PaginatedResult<PayrollRecordResponseDto>> GetAllAsync(PayrollFilterDto filter);
     Task<PayrollRecordResponseDto?> GetByIdAsync(int id);
     Task<PayrollRecordResponseDto?> GetMyPayslipAsync(int employeeId, int month, int year);
+    Task<PaginatedResult<PayrollRecordResponseDto>> GetMyPayslipsAsync(
+        int employeeId, int? month, int? year);
     Task<(PayrollRecordResponseDto? result, string? error)> MarkAsPaidAsync(int id);
     Task<List<PayrollRecordResponseDto>> GetEmployeePayslipsAsync(int employeeId);
 }

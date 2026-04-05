@@ -5,8 +5,8 @@ namespace EMS.Application.Modules.Leave.DTOs;
 // Manager/HR approve ya reject karne ke liye
 public class LeaveActionDto
 {
-    [Required]
-    public int ActionById { get; set; }  // Manager/HR ka EmployeeId
+    // Optional — Controller se JWT resolve karega agar 0 ho
+    public int ActionById { get; set; }
 
     [Required]
     public bool IsApproved { get; set; }

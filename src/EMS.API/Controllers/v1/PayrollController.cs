@@ -96,6 +96,21 @@ public class PayrollController : ControllerBase
         return Ok(ApiResponse<List<PayrollRecordResponseDto>>.Ok(result));
     }
 
+    // GET api/v1/payroll/my-payslips  (Employee self-service — no role restriction)
+    [HttpGet("my-payslips")]
+    [Authorize]
+    public async Task<IActionResult> GetMyPayslips(
+        [FromQuery] int? month = null,
+        [FromQuery] int? year = null)
+    {
+        var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
+            return BadRequest(ApiResponse<string>.Fail("Invalid user identity."));
+
+        var result = await _service.GetMyPayslipsAsync(userId, month, year);
+        return Ok(ApiResponse<PaginatedResult<PayrollRecordResponseDto>>.Ok(result));
+    }
+
     // PATCH api/v1/payroll/5/mark-paid
     [HttpPatch("{id}/mark-paid")]
     [Authorize(Roles = "SuperAdmin,HRAdmin")]

@@ -2,6 +2,7 @@ using EMS.Application.Common.DTOs;
 using EMS.Application.Modules.Payroll.DTOs;
 using EMS.Application.Modules.Payroll.Interfaces;
 using EMS.Domain.Entities.Payroll;
+using EMS.Domain.Enums;
 
 namespace EMS.Application.Modules.Payroll.Services;
 
@@ -122,7 +123,7 @@ public class PayrollService : IPayrollService
                 PresentDays = presentDays,
                 LeaveDays = leaveDays,
                 LopDays = lopDays,
-                Status = "Generated"
+                Status = PayrollStatus.Generated
             };
 
             var created = await _payrollRepo.CreateAsync(record);
@@ -162,12 +163,32 @@ public class PayrollService : IPayrollService
         return record == null ? null : MapToDto(record);
     }
 
+    public async Task<PaginatedResult<PayrollRecordResponseDto>> GetMyPayslipsAsync(
+        int employeeId, int? month, int? year)
+    {
+        var filter = new PayrollFilterDto
+        {
+            EmployeeId = employeeId,
+            Month = month,
+            Year = year,
+            PageSize = 50
+        };
+        var result = await _payrollRepo.GetAllAsync(filter);
+        return new PaginatedResult<PayrollRecordResponseDto>
+        {
+            Data = result.Data.Select(MapToDto),
+            TotalCount = result.TotalCount,
+            Page = result.Page,
+            PageSize = result.PageSize
+        };
+    }
+
     public async Task<(PayrollRecordResponseDto? result, string? error)>
         MarkAsPaidAsync(int id)
     {
         var record = await _payrollRepo.GetByIdAsync(id);
         if (record == null) return (null, "Payroll record not found.");
-        if (record.Status == "Paid") return (null, "Already marked as paid.");
+        if (record.Status == PayrollStatus.Paid) return (null, "Already marked as paid.");
 
         var updated = await _payrollRepo.MarkAsPaidAsync(id);
         return updated == null
@@ -248,7 +269,7 @@ public class PayrollService : IPayrollService
         PresentDays = p.PresentDays,
         LeaveDays = p.LeaveDays,
         LopDays = p.LopDays,
-        Status = p.Status,
+        Status = p.Status.ToString(),
         PaidOn = p.PaidOn,
         CreatedAt = p.CreatedAt
     };

@@ -71,6 +71,7 @@ public class UserService : IUserService
         Role = u.Role.ToString(),
         IsActive = u.IsActive,
         IsEmailVerified = u.IsEmailVerified,
+        IsFirstLogin = u.IsFirstLogin,
         CreatedAt = u.CreatedAt,
         LastLogin = u.LastLogin,
         IsLockedOut = u.LockoutEnd.HasValue && u.LockoutEnd > DateTime.UtcNow

@@ -14,6 +14,7 @@ public class EmployeeResponseDto
     public string Gender { get; set; } = string.Empty;
     public DateTime DateOfBirth { get; set; }
     public int Age => (int)((DateTime.Today - DateOfBirth).TotalDays / 365.25);
+    public DateTime? ProbationEndDate { get; set; }
     public DateTime JoiningDate { get; set; }
     public string Status { get; set; } = string.Empty;
     public string? ProfilePhotoUrl { get; set; }

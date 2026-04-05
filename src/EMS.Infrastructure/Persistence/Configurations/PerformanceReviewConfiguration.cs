@@ -24,8 +24,7 @@ public class PerformanceReviewConfiguration : IEntityTypeConfiguration<Performan
             .HasMaxLength(10);
 
         builder.Property(p => p.Status)
-            .IsRequired()
-            .HasMaxLength(20);
+            .HasConversion<string>();
 
         // Ratings decimal precision
         builder.Property(p => p.TechnicalSkillRating)

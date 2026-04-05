@@ -35,6 +35,7 @@ public class UpdateEmployeeDto
 
     public EmploymentStatus Status { get; set; }
 
-    // ✅ NEW: Link employee to a user account (for attendance, etc.)
+    public DateTime? ProbationEndDate { get; set; }
+
     public int? UserId { get; set; }
 }

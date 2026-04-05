@@ -39,7 +39,9 @@ public class AuthService : IAuthService
             PasswordHash = passwordHash,
             Role = UserRole.Employee,
             IsActive = true,
-            IsEmailVerified = false
+            IsEmailVerified = false,
+            // ✅ Register se aane wale users ko first login force nahi karte
+            IsFirstLogin = false
         };
 
         var created = await _authRepository.CreateAsync(user);
@@ -81,6 +83,8 @@ public class AuthService : IAuthService
         user.FailedLoginAttempts = 0;
         user.LockoutEnd = null;
         user.LastLogin = DateTime.UtcNow;
+
+        // ❌ IsFirstLogin yahan mat badlo — ChangePasswordAsync mein badlega
         await _authRepository.SaveChangesAsync();
 
         var (accessToken, refreshToken) = await IssueTokensAsync(user, ipAddress);
@@ -122,6 +126,41 @@ public class AuthService : IAuthService
         return true;
     }
 
+    // ✅ NEW: Change Password — First Login + Normal Flow dono handle karta hai
+    public async Task<(bool success, string? error)> ChangePasswordAsync(
+        int userId,
+        ChangePasswordDto dto)
+    {
+        var user = await _authRepository.GetByIdAsync(userId);
+        if (user == null)
+            return (false, "User not found.");
+
+        // Current password verify karo
+        bool isCurrentValid = BCrypt.Net.BCrypt.Verify(dto.CurrentPassword, user.PasswordHash);
+        if (!isCurrentValid)
+            return (false, "Current password is incorrect.");
+
+        // New password current se alag honi chahiye
+        bool isSamePassword = BCrypt.Net.BCrypt.Verify(dto.NewPassword, user.PasswordHash);
+        if (isSamePassword)
+            return (false, "New password must be different from current password.");
+
+        // Hash + save
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword, workFactor: 12);
+
+        // ✅ First login complete — flag reset karo
+        user.IsFirstLogin = false;
+
+        // Email verified maano — usne login kiya matlab email valid hai
+        user.IsEmailVerified = true;
+
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await _authRepository.SaveChangesAsync();
+
+        return (true, null);
+    }
+
     // ── Private Helpers ───────────────────────────────────────────────
 
     private async Task<(string accessToken, RefreshToken refreshToken)> IssueTokensAsync(
@@ -152,6 +191,7 @@ public class AuthService : IAuthService
             UserName = user.UserName,
             Email = user.Email,
             Role = user.Role.ToString(),
+            IsFirstLogin = user.IsFirstLogin,
             AccessTokenExpiresAt = _jwtService.GetAccessTokenExpiry(),
             RefreshTokenExpiresAt = refreshToken.ExpiresAt
         };

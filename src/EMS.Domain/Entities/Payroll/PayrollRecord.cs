@@ -32,7 +32,7 @@ public class PayrollRecord : BaseEntity
     public int LeaveDays { get; set; }
     public int LopDays { get; set; }
 
-    public string Status { get; set; } = "Generated";  // Generated, Paid
+    public Domain.Enums.PayrollStatus Status { get; set; } = Domain.Enums.PayrollStatus.Generated;
     public DateTime? PaidOn { get; set; }
 
     // Navigation

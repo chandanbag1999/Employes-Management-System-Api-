@@ -14,19 +14,3 @@ D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New fold
 D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.Application\obj\Release\net10.0\refint\EMS.Application.dll
 D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.Application\obj\Release\net10.0\EMS.Application.pdb
 D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\New folder\EmployeeManagementSystemBackend\src\EMS.Application\obj\Release\net10.0\ref\EMS.Application.dll
-D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Application\bin\Release\net10.0\EMS.Application.deps.json
-D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Application\bin\Release\net10.0\EMS.Application.dll
-D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Application\bin\Release\net10.0\EMS.Application.pdb
-D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Application\bin\Release\net10.0\EMS.Domain.dll
-D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Application\bin\Release\net10.0\EMS.Domain.pdb
-D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Application\obj\Release\net10.0\EMS.Application.csproj.AssemblyReference.cache
-D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Application\obj\Release\net10.0\EMS.Application.GeneratedMSBuildEditorConfig.editorconfig
-D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Application\obj\Release\net10.0\EMS.Application.AssemblyInfoInputs.cache
-D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Application\obj\Release\net10.0\EMS.Application.AssemblyInfo.cs
-D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Application\obj\Release\net10.0\EMS.Application.csproj.CoreCompileInputs.cache
-D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Application\obj\Release\net10.0\EMS.Application.sourcelink.json
-D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Application\obj\Release\net10.0\EMS.Appl.49CE4691.Up2Date
-D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Application\obj\Release\net10.0\EMS.Application.dll
-D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Application\obj\Release\net10.0\refint\EMS.Application.dll
-D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Application\obj\Release\net10.0\EMS.Application.pdb
-D:\CodeSpace\Parmanent-Field\C-Sharp\Dot_net\Employes-Management-System\EmployeeManagementSystemBackend\src\EMS.Application\obj\Release\net10.0\ref\EMS.Application.dll

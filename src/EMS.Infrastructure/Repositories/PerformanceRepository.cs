@@ -2,6 +2,7 @@ using EMS.Application.Common.DTOs;
 using EMS.Application.Modules.Performance.DTOs;
 using EMS.Application.Modules.Performance.Interfaces;
 using EMS.Domain.Entities.Performance;
+using EMS.Domain.Enums;
 using EMS.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -119,8 +120,8 @@ public class PerformanceRepository : IPerformanceRepository
             query = query.Where(r =>
                 r.Quarter == filter.Quarter.ToUpper());
 
-        if (!string.IsNullOrWhiteSpace(filter.Status))
-            query = query.Where(r => r.Status == filter.Status);
+        if (Enum.TryParse<ReviewStatus>(filter.Status, out var reviewStatus))
+            query = query.Where(r => r.Status == reviewStatus);
 
         var total = await query.CountAsync();
         var data = await query
@@ -198,7 +199,7 @@ public class PerformanceRepository : IPerformanceRepository
         var review = await _context.PerformanceReviews.FindAsync(id);
         if (review == null) return null;
 
-        review.Status = "Submitted";
+        review.Status = ReviewStatus.Submitted;
         review.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();

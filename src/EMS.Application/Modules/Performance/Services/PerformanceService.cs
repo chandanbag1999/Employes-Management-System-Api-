@@ -2,6 +2,7 @@ using EMS.Application.Common.DTOs;
 using EMS.Application.Modules.Performance.DTOs;
 using EMS.Application.Modules.Performance.Interfaces;
 using EMS.Domain.Entities.Performance;
+using EMS.Domain.Enums;
 
 namespace EMS.Application.Modules.Performance.Services;
 
@@ -40,7 +41,7 @@ public class PerformanceService : IPerformanceService
             ReviewCycle = dto.ReviewCycle.Trim().ToUpper(),
             SetByManagerId = dto.SetByManagerId,
             ProgressPercent = 0,
-            Status = "Active"
+            Status = GoalStatus.Active
         };
 
         var created = await _repo.CreateGoalAsync(goal);
@@ -54,7 +55,7 @@ public class PerformanceService : IPerformanceService
         if (goal == null) return (null, "Goal not found.");
 
         goal.ProgressPercent = dto.ProgressPercent;
-        goal.Status = dto.ProgressPercent == 100 ? "Completed" : dto.Status;
+        goal.Status = dto.ProgressPercent == 100 ? GoalStatus.Completed : dto.Status;
         goal.UpdatedAt = DateTime.UtcNow;
 
         var updated = await _repo.UpdateGoalAsync(id, goal);
@@ -103,14 +104,6 @@ public class PerformanceService : IPerformanceService
             return (null,
                 $"Review already exists for cycle {dto.ReviewCycle}.");
 
-        // Overall rating = average of all 5 ratings
-        var overallRating = Math.Round(
-            (dto.TechnicalSkillRating +
-             dto.CommunicationRating +
-             dto.TeamworkRating +
-             dto.LeadershipRating +
-             dto.PunctualityRating) / 5, 1);
-
         var review = new PerformanceReview
         {
             EmployeeId = dto.EmployeeId,
@@ -123,12 +116,13 @@ public class PerformanceService : IPerformanceService
             TeamworkRating = dto.TeamworkRating,
             LeadershipRating = dto.LeadershipRating,
             PunctualityRating = dto.PunctualityRating,
-            OverallRating = overallRating,
             Strengths = dto.Strengths?.Trim(),
             AreasOfImprovement = dto.AreasOfImprovement?.Trim(),
             ReviewerComments = dto.ReviewerComments?.Trim(),
-            Status = "Draft"
+            Status = ReviewStatus.Draft
         };
+
+        review.RecalculateOverallRating();
 
         var created = await _repo.CreateReviewAsync(review);
         return (MapReviewToDto(created), null);
@@ -140,7 +134,7 @@ public class PerformanceService : IPerformanceService
         var review = await _repo.GetReviewByIdAsync(id);
         if (review == null) return (null, "Review not found.");
 
-        if (review.Status == "Submitted")
+        if (review.Status == ReviewStatus.Submitted)
             return (null, "Review already submitted, cannot add comment.");
 
         var updated = await _repo.AddSelfCommentAsync(id, dto.SelfComment.Trim());
@@ -155,7 +149,7 @@ public class PerformanceService : IPerformanceService
         var review = await _repo.GetReviewByIdAsync(id);
         if (review == null) return (null, "Review not found.");
 
-        if (review.Status == "Submitted")
+        if (review.Status == ReviewStatus.Submitted)
             return (null, "Review already submitted.");
 
         var updated = await _repo.SubmitReviewAsync(id);
@@ -205,8 +199,8 @@ public class PerformanceService : IPerformanceService
             EmployeeCode = empCode,
             DepartmentName = deptName,
             TotalGoals = goals.Count,
-            CompletedGoals = goals.Count(g => g.Status == "Completed"),
-            ActiveGoals = goals.Count(g => g.Status == "Active"),
+            CompletedGoals = goals.Count(g => g.Status == GoalStatus.Completed),
+            ActiveGoals = goals.Count(g => g.Status == GoalStatus.Active),
             LatestOverallRating = latestReview?.OverallRating,
             LatestRatingLabel = latestReview != null
                 ? GetRatingLabel(latestReview.OverallRating)
@@ -239,7 +233,7 @@ public class PerformanceService : IPerformanceService
         Deadline = g.Deadline,
         ProgressPercent = g.ProgressPercent,
         ReviewCycle = g.ReviewCycle,
-        Status = g.Status,
+        Status = g.Status.ToString(),
         SetByManagerId = g.SetByManagerId,
         SetByManagerName = g.SetByManager != null
             ? $"{g.SetByManager.FirstName} {g.SetByManager.LastName}"
@@ -273,7 +267,7 @@ public class PerformanceService : IPerformanceService
         AreasOfImprovement = r.AreasOfImprovement,
         ReviewerComments = r.ReviewerComments,
         EmployeeSelfComment = r.EmployeeSelfComment,
-        Status = r.Status,
+        Status = r.Status.ToString(),
         CreatedAt = r.CreatedAt
     };
 }

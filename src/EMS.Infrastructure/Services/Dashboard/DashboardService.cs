@@ -62,10 +62,10 @@ public class DashboardService : IDashboardService
         var totalDesignations = await _context.Designations.CountAsync();
 
         var pendingReviews = await _context.PerformanceReviews
-            .CountAsync(r => r.Status == "Draft");
+            .CountAsync(r => r.Status == ReviewStatus.Draft);
         var goalsCompleted = await _context.Goals
             .CountAsync(g =>
-                g.Status == "Completed" &&
+                g.Status == GoalStatus.Completed &&
                 g.ReviewCycle.StartsWith(currentYear.ToString()));
 
         return new DashboardStatsDto

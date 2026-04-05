@@ -1,10 +1,11 @@
+using EMS.Application.Common.DTOs;
 using EMS.Domain.Entities.Organization;
 
 namespace EMS.Application.Modules.Organization.Interfaces;
 
 public interface IDesignationRepository
 {
-    Task<IEnumerable<Designation>> GetAllAsync(int? departmentId);
+    Task<PaginatedResult<Designation>> GetAllAsync(int page, int pageSize, int? departmentId = null);
     Task<IEnumerable<Designation>> GetAllDeletedAsync();
     Task<Designation?> GetByIdAsync(int id);
     Task<Designation> CreateAsync(Designation designation);

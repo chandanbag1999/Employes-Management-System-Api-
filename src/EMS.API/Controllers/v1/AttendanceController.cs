@@ -1,10 +1,9 @@
 using EMS.Application.Common.DTOs;
 using EMS.Application.Modules.Attendance.DTOs;
 using EMS.Application.Modules.Attendance.Interfaces;
-using EMS.Infrastructure.Persistence;
+using EMS.Application.Modules.Employees.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace EMS.API.Controllers.v1;
@@ -15,14 +14,17 @@ namespace EMS.API.Controllers.v1;
 public class AttendanceController : ControllerBase
 {
     private readonly IAttendanceService _service;
-    private readonly AppDbContext _context;
+    private readonly IEmployeeRepository _employeeRepo;
+    private readonly ILogger<AttendanceController> _logger;
 
     public AttendanceController(
         IAttendanceService service,
-        AppDbContext context)
+        IEmployeeRepository employeeRepo,
+        ILogger<AttendanceController> logger)
     {
         _service = service;
-        _context = context;
+        _employeeRepo = employeeRepo;
+        _logger = logger;
     }
 
     // ✅ FIXED: ClaimTypes.NameIdentifier use karo — "sub" nahi
@@ -31,30 +33,36 @@ public class AttendanceController : ControllerBase
         // JWT mein ClaimTypes.NameIdentifier = user.Id
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+        _logger.LogInformation("[Attendance] JWT ClaimTypes.NameIdentifier = '{userIdClaim}'", userIdClaim ?? "NULL");
+
         if (string.IsNullOrEmpty(userIdClaim) ||
             !int.TryParse(userIdClaim, out var userId))
         {
+            _logger.LogWarning("[Attendance] Invalid or missing userId claim. Value: '{userIdClaim}'", userIdClaim);
             return (0, "Invalid token. Please login again.");
         }
 
         // UserId se linked EmployeeProfile nikalo
-        var employee = await _context.Employees
-            .FirstOrDefaultAsync(e => e.UserId == userId && !e.IsDeleted);
+        var employeeId = await _employeeRepo.GetIdByUserIdAsync(userId);
 
-        if (employee == null)
+        _logger.LogInformation("[Attendance] userId={userId} → employeeId={employeeId}", userId, employeeId?.ToString() ?? "NULL");
+
+        if (employeeId == null)
         {
+            _logger.LogWarning("[Attendance] No employee profile linked for userId={userId}", userId);
             return (0,
-                "No employee profile linked to your account. " +
+                $"No employee profile linked to your account (userId={userId}). " +
                 "Please contact HR to link your profile.");
         }
 
-        return (employee.Id, null);
+        return (employeeId.Value, null);
     }
 
     // POST api/v1/attendance/clock-in
     [HttpPost("clock-in")]
     public async Task<IActionResult> ClockIn([FromBody] ClockInDto dto)
     {
+        _logger.LogInformation("[Attendance] POST /clock-in");
         var (employeeId, err) = await GetEmployeeIdFromJwtAsync();
         if (err != null)
             return BadRequest(ApiResponse<string>.Fail(err));
@@ -71,6 +79,7 @@ public class AttendanceController : ControllerBase
     [HttpPost("clock-out")]
     public async Task<IActionResult> ClockOut([FromBody] ClockOutDto dto)
     {
+        _logger.LogInformation("[Attendance] POST /clock-out");
         var (employeeId, err) = await GetEmployeeIdFromJwtAsync();
         if (err != null)
             return BadRequest(ApiResponse<string>.Fail(err));
@@ -87,6 +96,7 @@ public class AttendanceController : ControllerBase
     [HttpGet("my/today")]
     public async Task<IActionResult> GetMyToday()
     {
+        _logger.LogInformation("[Attendance] GET /my/today");
         var (employeeId, err) = await GetEmployeeIdFromJwtAsync();
         if (err != null)
             return BadRequest(ApiResponse<string>.Fail(err));
@@ -101,6 +111,7 @@ public class AttendanceController : ControllerBase
         [FromQuery] int month,
         [FromQuery] int year)
     {
+        _logger.LogInformation("[Attendance] GET /my/summary — month={month}, year={year}", month, year);
         if (month < 1 || month > 12)
             return BadRequest(ApiResponse<string>.Fail("Invalid month."));
 

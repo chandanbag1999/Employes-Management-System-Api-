@@ -1,8 +1,10 @@
 using EMS.Application.Common.DTOs;
+using EMS.Application.Common.Interfaces;
 using EMS.Application.Modules.Identity.DTOs;
 using EMS.Application.Modules.Identity.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace EMS.API.Controllers.v1;
 
@@ -78,6 +80,59 @@ public class AuthController : ControllerBase
             return BadRequest(ApiResponse<string>.Fail("Invalid or already revoked token."));
 
         return Ok(ApiResponse<string>.Ok("Logged out.", "Logout successful."));
+    }
+
+    // ✅ NEW: POST api/v1/auth/change-password
+    // Sirf authenticated user apna password change kar sakta hai
+    [HttpPost("change-password")]
+    [Authorize]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ApiResponse<string>.Fail("Invalid request data."));
+
+        // JWT se userId nikalo
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
+            return Unauthorized(ApiResponse<string>.Fail("Invalid token."));
+
+        var result = await _authService.ChangePasswordAsync(userId, dto);
+
+        if (!result.success)
+            return BadRequest(ApiResponse<string>.Fail(result.error ?? "Password change failed."));
+
+        return Ok(ApiResponse<string>.Ok(
+            "Password changed successfully.",
+            "Please login again with your new password."));
+    }
+
+    // GET api/v1/auth/test-email?to=youremail@gmail.com
+    [HttpGet("test-email")]
+    [AllowAnonymous]
+    public async Task<IActionResult> TestEmail(
+        [FromQuery] string to,
+        [FromServices] IEmailService emailService)
+    {
+        try
+        {
+            await emailService.SendWelcomeEmailAsync(
+                toEmail: to,
+                employeeName: "Test Employee",
+                temporaryPassword: "Welcome@123",
+                loginUrl: "http://localhost:8080"
+            );
+            return Ok(new { success = true, message = $"Email sent to {to}" });
+        }
+        catch (Exception ex)
+        {
+            return Ok(new
+            {
+                success = false,
+                error = ex.Message,
+                innerError = ex.InnerException?.Message,
+                stackTrace = ex.StackTrace
+            });
+        }
     }
 
     // ── Private Helper ────────────────────────────────────────────────

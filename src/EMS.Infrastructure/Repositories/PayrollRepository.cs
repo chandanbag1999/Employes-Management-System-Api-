@@ -91,8 +91,8 @@ public class PayrollRepository : IPayrollRepository
         if (filter.Year.HasValue)
             query = query.Where(p => p.Year == filter.Year);
 
-        if (!string.IsNullOrWhiteSpace(filter.Status))
-            query = query.Where(p => p.Status == filter.Status);
+        if (Enum.TryParse<PayrollStatus>(filter.Status, out var payrollStatus))
+            query = query.Where(p => p.Status == payrollStatus);
 
         var total = await query.CountAsync();
         var data = await query
@@ -140,7 +140,7 @@ public class PayrollRepository : IPayrollRepository
         var record = await _context.PayrollRecords.FindAsync(id);
         if (record == null) return null;
 
-        record.Status = "Paid";
+        record.Status = PayrollStatus.Paid;
         record.PaidOn = DateTime.UtcNow;
         record.UpdatedAt = DateTime.UtcNow;
 

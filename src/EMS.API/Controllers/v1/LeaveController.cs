@@ -3,6 +3,7 @@ using EMS.Application.Modules.Leave.DTOs;
 using EMS.Application.Modules.Leave.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace EMS.API.Controllers.v1;
 
@@ -16,6 +17,17 @@ public class LeaveController : ControllerBase
     public LeaveController(ILeaveService service)
     {
         _service = service;
+    }
+
+    private async Task<int?> GetEmployeeIdFromJwtAsync()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
+            return null;
+
+        // EmployeeProfile linked hai?
+        var employeeRepo = HttpContext.RequestServices.GetRequiredService<EMS.Application.Modules.Employees.Interfaces.IEmployeeRepository>();
+        return await employeeRepo.GetIdByUserIdAsync(userId);
     }
 
     // GET api/v1/leave?status=Pending&employeeId=1
@@ -40,6 +52,14 @@ public class LeaveController : ControllerBase
     [HttpPost("apply")]
     public async Task<IActionResult> Apply([FromBody] ApplyLeaveDto dto)
     {
+        var employeeId = await GetEmployeeIdFromJwtAsync();
+        if (employeeId == null)
+            return UnprocessableEntity(ApiResponse<string>.Fail(
+                "Your account is not linked to an employee profile."));
+
+        // EmployeeId JWT se inject karo
+        dto.EmployeeId = employeeId.Value;
+
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         var (result, error) = await _service.ApplyAsync(dto);
@@ -57,6 +77,16 @@ public class LeaveController : ControllerBase
     public async Task<IActionResult> ApproveOrReject(
         int id, [FromBody] LeaveActionDto dto)
     {
+        // ✅ Auto-resolve actionById from JWT agar 0 ho
+        if (dto.ActionById == 0)
+        {
+            var approverEmployeeId = await GetEmployeeIdFromJwtAsync();
+            if (approverEmployeeId == null)
+                return UnprocessableEntity(ApiResponse<string>.Fail(
+                    "Your account is not linked to an employee profile."));
+            dto.ActionById = approverEmployeeId.Value;
+        }
+
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         var (result, error) = await _service.ApproveOrRejectAsync(id, dto);
@@ -88,6 +118,24 @@ public class LeaveController : ControllerBase
     public async Task<IActionResult> GetBalance(
         int employeeId, [FromQuery] int year = 0)
     {
+        if (year == 0) year = DateTime.Today.Year;
+
+        var result = await _service.GetBalanceAsync(employeeId, year);
+        if (result == null)
+            return NotFound(ApiResponse<string>.Fail("No data found."));
+
+        return Ok(ApiResponse<LeaveBalanceDto>.Ok(result));
+    }
+
+    // GET api/v1/leave/my/balance/{employeeId} — Employee self-service
+    [HttpGet("my/balance/{employeeId}")]
+    public async Task<IActionResult> GetMyBalance(int employeeId, [FromQuery] int year = 0)
+    {
+        // Verify the employee is the logged-in user
+        var currentEmployeeId = await GetEmployeeIdFromJwtAsync();
+        if (currentEmployeeId != employeeId)
+            return Forbid();
+
         if (year == 0) year = DateTime.Today.Year;
 
         var result = await _service.GetBalanceAsync(employeeId, year);

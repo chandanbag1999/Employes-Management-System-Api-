@@ -1,10 +1,14 @@
+using EMS.Application.Common.Interfaces;
 using EMS.Application.Modules.Employees.DTOs;
 using EMS.Application.Modules.Employees.Interfaces;
 using EMS.Application.Modules.Employees.Services;
+using EMS.Application.Modules.Identity.Interfaces;
 using EMS.Domain.Entities.Employee;
 using EMS.Domain.Enums;
 using EMS.UnitTests.Helpers;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace EMS.UnitTests.Modules.Employees;
@@ -17,7 +21,16 @@ public class EmployeeServiceTests
     public EmployeeServiceTests()
     {
         _repoMock = new Mock<IEmployeeRepository>();
-        _sut = new EmployeeService(_repoMock.Object);
+        var authRepoMock = new Mock<IAuthRepository>();
+        var emailMock = new Mock<IEmailService>();
+        var configMock = new Mock<IConfiguration>();
+        var loggerMock = new Mock<ILogger<EmployeeService>>();
+        _sut = new EmployeeService(
+            _repoMock.Object,
+            authRepoMock.Object,
+            emailMock.Object,
+            configMock.Object,
+            loggerMock.Object);
     }
 
     [Fact]

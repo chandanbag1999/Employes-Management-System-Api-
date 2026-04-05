@@ -1,10 +1,11 @@
+using EMS.Application.Common.DTOs;
 using EMS.Application.Modules.Organization.DTOs;
 
 namespace EMS.Application.Modules.Organization.Interfaces;
 
 public interface IDesignationService
 {
-    Task<IEnumerable<DesignationResponseDto>> GetAllAsync(int? departmentId);
+    Task<PaginatedResult<DesignationResponseDto>> GetAllAsync(int page, int pageSize, int? departmentId = null);
     Task<IEnumerable<DesignationResponseDto>> GetAllDeletedAsync();
     Task<DesignationResponseDto?> GetByIdAsync(int id);
     Task<DesignationResponseDto> CreateAsync(CreateDesignationDto dto);

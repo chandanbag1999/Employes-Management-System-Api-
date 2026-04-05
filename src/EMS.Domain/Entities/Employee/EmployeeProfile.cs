@@ -16,7 +16,7 @@ public class EmployeeProfile : BaseEntity
     public string? ProfilePhotoUrl { get; set; }
     public DateTime JoiningDate { get; set; }
     public EmploymentStatus Status { get; set; } = EmploymentStatus.Active;
-    public string? ProbationEndDate { get; set; }
+    public DateTime? ProbationEndDate { get; set; }
 
     // FKs
     public int DepartmentId { get; set; }

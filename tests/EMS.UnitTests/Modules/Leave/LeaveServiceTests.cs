@@ -1,3 +1,4 @@
+using EMS.Application.Modules.Attendance.Interfaces;
 using EMS.Application.Modules.Leave.DTOs;
 using EMS.Application.Modules.Leave.Interfaces;
 using EMS.Application.Modules.Leave.Services;
@@ -12,12 +13,14 @@ namespace EMS.UnitTests.Modules.Leave;
 public class LeaveServiceTests
 {
     private readonly Mock<ILeaveRepository> _repoMock;
+    private readonly Mock<IAttendanceRepository> _attendanceRepoMock;
     private readonly LeaveService _sut;
 
     public LeaveServiceTests()
     {
         _repoMock = new Mock<ILeaveRepository>();
-        _sut = new LeaveService(_repoMock.Object);
+        _attendanceRepoMock = new Mock<IAttendanceRepository>();
+        _sut = new LeaveService(_repoMock.Object, _attendanceRepoMock.Object);
     }
 
     [Fact]

@@ -1,3 +1,4 @@
+using EMS.Application.Common.DTOs;
 using EMS.Application.Modules.Organization.Interfaces;
 using EMS.Domain.Entities.Organization;
 using EMS.Infrastructure.Persistence;
@@ -14,7 +15,7 @@ public class DesignationRepository : IDesignationRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Designation>> GetAllAsync(int? departmentId)
+    public async Task<PaginatedResult<Designation>> GetAllAsync(int page, int pageSize, int? departmentId = null)
     {
         // HasQueryFilter automatically excludes IsDeleted records
         var query = _context.Designations
@@ -24,7 +25,21 @@ public class DesignationRepository : IDesignationRepository
         if (departmentId.HasValue)
             query = query.Where(d => d.DepartmentId == departmentId);
 
-        return await query.OrderBy(d => d.Title).ToListAsync();
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .OrderBy(d => d.Title)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PaginatedResult<Designation>
+        {
+            Data = items,
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
     }
 
     public async Task<IEnumerable<Designation>> GetAllDeletedAsync()

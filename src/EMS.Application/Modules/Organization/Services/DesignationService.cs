@@ -1,3 +1,4 @@
+using EMS.Application.Common.DTOs;
 using EMS.Application.Modules.Organization.DTOs;
 using EMS.Application.Modules.Organization.Interfaces;
 using EMS.Domain.Entities.Organization;
@@ -13,10 +14,17 @@ public class DesignationService : IDesignationService
         _repo = repo;
     }
 
-    public async Task<IEnumerable<DesignationResponseDto>> GetAllAsync(int? departmentId)
+    public async Task<PaginatedResult<DesignationResponseDto>> GetAllAsync(
+        int page, int pageSize, int? departmentId = null)
     {
-        var list = await _repo.GetAllAsync(departmentId);
-        return list.Select(MapToDto);
+        var result = await _repo.GetAllAsync(page, pageSize, departmentId);
+        return new PaginatedResult<DesignationResponseDto>
+        {
+            Data = result.Data.Select(MapToDto),
+            TotalCount = result.TotalCount,
+            Page = result.Page,
+            PageSize = result.PageSize
+        };
     }
 
     public async Task<IEnumerable<DesignationResponseDto>> GetAllDeletedAsync()

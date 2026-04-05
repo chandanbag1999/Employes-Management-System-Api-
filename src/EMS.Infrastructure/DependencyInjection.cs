@@ -38,10 +38,14 @@ public static class DependencyInjection
     {
         // PostgreSQL
         services.AddDbContext<AppDbContext>(options =>
+        {
             options.UseNpgsql(
                 configuration.GetConnectionString("DefaultConnection"),
-                b => b.MigrationsAssembly("EMS.Infrastructure")
-            ));
+                b => b.MigrationsAssembly("EMS.Infrastructure"));
+            // Suppress pending model changes warning/make it non-fatal
+            options.ConfigureWarnings(warnings =>
+                warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+        });
 
         // UnitOfWork
         services.AddScoped<EMS.Infrastructure.UnitOfWork.UnitOfWork>();
@@ -70,6 +74,9 @@ public static class DependencyInjection
         services.AddScoped<IPerformanceService, PerformanceService>();
         services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<IReportService, ReportService>();
+
+        // ── Email Service ───────────────────────────────────────────
+        services.AddScoped<IEmailService, EmailService>();
 
         // ── Background Services ───────────────────────────────────
         services.AddHostedService<TokenCleanupService>();
@@ -100,7 +107,7 @@ public static class DependencyInjection
                 ValidIssuer = configuration["JwtSettings:Issuer"],
                 ValidAudience = configuration["JwtSettings:Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey(key),
-                ClockSkew = TimeSpan.Zero  // NEW — strict expiry enforcement
+                ClockSkew = TimeSpan.FromMinutes(2)  // Small buffer for network clock differences
             };
         });
 

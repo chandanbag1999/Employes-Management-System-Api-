@@ -20,8 +20,7 @@ public class GoalConfiguration : IEntityTypeConfiguration<Goal>
             .HasMaxLength(20);
 
         builder.Property(g => g.Status)
-            .IsRequired()
-            .HasMaxLength(20);
+            .HasConversion<string>();
 
         // Goal → Employee
         builder.HasOne(g => g.Employee)

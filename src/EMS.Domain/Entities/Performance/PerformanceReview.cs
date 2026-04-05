@@ -1,5 +1,6 @@
 using EMS.Domain.Common;
 using EMS.Domain.Entities.Employee;
+using EMS.Domain.Enums;
 
 namespace EMS.Domain.Entities.Performance;
 
@@ -25,7 +26,13 @@ public class PerformanceReview : BaseEntity
     public string? ReviewerComments { get; set; }
     public string? EmployeeSelfComment { get; set; }
 
-    public string Status { get; set; } = "Draft"; // Draft, Submitted, Acknowledged
+    public ReviewStatus Status { get; set; } = ReviewStatus.Draft;
+
+    public void RecalculateOverallRating()
+    {
+        OverallRating = Math.Round(
+            (TechnicalSkillRating + CommunicationRating + TeamworkRating + LeadershipRating + PunctualityRating) / 5, 1);
+    }
 
     // Navigation
     public EmployeeProfile? Employee { get; set; }

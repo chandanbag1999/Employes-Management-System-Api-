@@ -30,6 +30,10 @@ public class AppUserConfiguration : IEntityTypeConfiguration<AppUser>
             .IsRequired()
             .HasConversion<string>();  // Enum → string in DB
 
+        // ✅ NEW: IsFirstLogin default true — HR se create hone wale employees ke liye
+        builder.Property(u => u.IsFirstLogin)
+            .HasDefaultValue(true);
+
         // Soft delete filter — IsDeleted = true wale automatically hide
         builder.HasQueryFilter(u => !u.IsDeleted);
     }

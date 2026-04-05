@@ -28,8 +28,7 @@ public class PayrollRecordConfiguration : IEntityTypeConfiguration<PayrollRecord
         builder.Property(p => p.NetSalary).HasColumnType("decimal(18,2)");
 
         builder.Property(p => p.Status)
-            .IsRequired()
-            .HasMaxLength(20);
+            .HasConversion<string>();
 
         builder.HasOne(p => p.Employee)
             .WithMany()

@@ -1,5 +1,6 @@
 using EMS.Domain.Common;
 using EMS.Domain.Entities.Employee;
+using EMS.Domain.Enums;
 
 namespace EMS.Domain.Entities.Performance;
 
@@ -11,7 +12,7 @@ public class Goal : BaseEntity
     public DateTime Deadline { get; set; }
     public int ProgressPercent { get; set; } = 0;
     public string ReviewCycle { get; set; } = string.Empty; // "2026-Q1"
-    public string Status { get; set; } = "Active"; // Active, Completed, Cancelled
+    public GoalStatus Status { get; set; } = GoalStatus.Active;
     public int? SetByManagerId { get; set; }
 
     // Navigation

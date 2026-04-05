@@ -191,6 +191,11 @@ namespace EMS.Infrastructure.Migrations
                     b.Property<bool>("IsEmailVerified")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsFirstLogin")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
                     b.Property<DateTime?>("LastLogin")
                         .HasColumnType("timestamp without time zone");
 

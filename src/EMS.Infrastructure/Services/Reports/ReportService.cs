@@ -96,7 +96,7 @@ public class ReportService : IReportService
             GrossEarnings = p.GrossEarnings,
             TotalDeductions = p.TotalDeductions,
             NetSalary = p.NetSalary,
-            Status = p.Status
+            Status = p.Status.ToString()
         });
     }
 

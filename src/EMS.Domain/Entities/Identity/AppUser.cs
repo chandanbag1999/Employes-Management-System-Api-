@@ -19,6 +19,9 @@ public class AppUser : BaseEntity
     public DateTime? LockoutEnd { get; set; }
     public bool IsEmailVerified { get; set; } = false;
 
+    // ✅ Enterprise first-login flow — explicit opt-in at creation time
+    public bool IsFirstLogin { get; set; } = false;
+
     // Navigation property for refresh tokens
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 

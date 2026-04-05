@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using EMS.Application.Common.DTOs;
+using Microsoft.EntityFrameworkCore;
 
 namespace EMS.API.Middleware;
 
@@ -52,7 +53,12 @@ public class ExceptionMiddleware
                 "Resource not found."),
             InvalidOperationException => (
                 HttpStatusCode.BadRequest,
-                ex.Message),
+                "An invalid request was made."),
+            DbUpdateException dbEx => (
+                HttpStatusCode.BadRequest,
+                dbEx.InnerException?.Message.Contains("duplicate") == true
+                    ? "A record with this value already exists."
+                    : "A database constraint was violated."),
             _ => (
                 HttpStatusCode.InternalServerError,
                 "An unexpected error occurred. Please try again.")

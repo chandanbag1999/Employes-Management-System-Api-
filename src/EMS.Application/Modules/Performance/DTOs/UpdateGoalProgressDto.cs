@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using EMS.Domain.Enums;
 
 namespace EMS.Application.Modules.Performance.DTOs;
 
@@ -8,6 +9,5 @@ public class UpdateGoalProgressDto
     [Range(0, 100)]
     public int ProgressPercent { get; set; }
 
-    [MaxLength(20)]
-    public string Status { get; set; } = "Active"; // Active, Completed, Cancelled
+    public GoalStatus Status { get; set; }
 }

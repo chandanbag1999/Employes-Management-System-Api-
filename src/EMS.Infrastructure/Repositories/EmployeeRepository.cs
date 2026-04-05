@@ -85,6 +85,9 @@ public class EmployeeRepository : IEmployeeRepository
         return (await GetByIdAsync(employee.Id))!;
     }
 
+    public async Task AddAsync(EmployeeProfile employee)
+        => await _context.Employees.AddAsync(employee);
+
     public async Task<EmployeeProfile?> UpdateAsync(int id, EmployeeProfile employee)
     {
         var existing = await _context.Employees.FindAsync(id);
@@ -117,4 +120,13 @@ public class EmployeeRepository : IEmployeeRepository
 
     public async Task<int> GetTotalCountAsync()
         => await _context.Employees.IgnoreQueryFilters().CountAsync();
+
+    public async Task<int?> GetIdByUserIdAsync(int userId)
+        => await _context.Employees
+            .Where(e => e.UserId == userId && !e.IsDeleted)
+            .Select(e => (int?)e.Id)
+            .FirstOrDefaultAsync();
+
+    public async Task SaveChangesAsync()
+        => await _context.SaveChangesAsync();
 }

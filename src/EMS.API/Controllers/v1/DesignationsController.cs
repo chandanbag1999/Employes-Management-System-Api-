@@ -20,10 +20,13 @@ public class DesignationsController : ControllerBase
 
     // GET api/v1/designations
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] int? departmentId = null)
+    public async Task<IActionResult> GetAll(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] int? departmentId = null)
     {
-        var result = await _service.GetAllAsync(departmentId);
-        return Ok(ApiResponse<IEnumerable<DesignationResponseDto>>.Ok(result));
+        var result = await _service.GetAllAsync(page, pageSize, departmentId);
+        return Ok(ApiResponse<PaginatedResult<DesignationResponseDto>>.Ok(result));
     }
 
     // GET api/v1/designations/deleted

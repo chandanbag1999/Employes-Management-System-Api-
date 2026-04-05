@@ -38,4 +38,6 @@ public class CreateEmployeeDto
 
     // Optional — agar user account bhi banana hai saath mein
     public string? UserPassword { get; set; }
+
+    public DateTime? ProbationEndDate { get; set; }
 }

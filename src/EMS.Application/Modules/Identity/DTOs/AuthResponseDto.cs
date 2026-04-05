@@ -9,4 +9,7 @@ public class AuthResponseDto
     public string Role { get; set; } = string.Empty;
     public DateTime AccessTokenExpiresAt { get; set; }
     public DateTime RefreshTokenExpiresAt { get; set; }
+
+    // ✅ NEW: Frontend redirect ke liye
+    public bool IsFirstLogin { get; set; }
 }

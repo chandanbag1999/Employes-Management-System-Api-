@@ -405,6 +405,15 @@ public abstract class BaseEntity
 | LeaveStatus | [`EMS.Domain/Enums/LeaveStatus.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Enums/LeaveStatus.cs) |
 | AttendanceStatus | [`EMS.Domain/Enums/AttendanceStatus.cs`](file:///d:/CodeSpace/Parmanent-Field/C-Sharp/Dot_net/Employes-Management-System/New%20folder/EmployeeManagementSystemBackend/src/EMS.Domain/Enums/AttendanceStatus.cs) |
 
+**All Enums (Actual Values):**
+| Enum | Values |
+|------|--------|
+| UserRole | SuperAdmin=1, HRAdmin=2, Manager=3, Employee=4 |
+| EmploymentStatus | Active=1, Inactive=2, OnProbation=3, Resigned=4, Terminated=5 |
+| Gender | Male=1, Female=2, Other=3 |
+| LeaveStatus | (see LeaveStatus.cs) |
+| AttendanceStatus | Present=1, Absent=2, HalfDay=3, Holiday=4, WeekOff=5, OnLeave=6 |
+
 **Kyon Soft Delete?**
 - Real companies mein data permanently delete nahi hoti
 - Audit trail maintain hoti hai
@@ -674,6 +683,9 @@ PerformanceReview
 | `LeaveModule` | Dual Employee FK (applicant + approver) |
 | `PayrollModule` | PayrollRecords table + unique constraint |
 | `PerformanceModule` | Goal updates + PerformanceReviews table |
+| `Enterprise_Identity_Upgrade` | Identity enhancements and refresh token infrastructure |
+| `Fix_RefreshToken_Configuration` | Refresh token table configuration fixes |
+| `FixDateOnlyTypes` | Date type handling fixes for PostgreSQL compatibility |
 
 ---
 
@@ -709,9 +721,13 @@ Login flow:
 ### Module 2: Organization (Departments + Designations)
 
 **Kya karta hai:**
-- Department CRUD with employee count
-- Designation CRUD with department link
-- Pagination + Search
+- Department CRUD with employee count, pagination + search
+- Department delete guard (prevents deletion if employees assigned)
+- Soft delete, restore, and purge for departments (data recovery)
+- Designation CRUD with department association, pagination + search
+- Soft delete, restore, and purge for designations (data recovery)
+- Deleted items view (superadmin only)
+- Unique name constraints per department
 
 **Key Business Logic:**
 ```
@@ -752,8 +768,10 @@ Kyon IgnoreQueryFilters?
 - Clock In / Clock Out
 - Auto working hours calculate
 - HalfDay detection (< 4 hours = HalfDay)
-- Monthly summary with stats
+- Monthly summary with stats (admin)
+- Self-service: get my today's record and monthly summary
 - Admin manual attendance marking
+- Auto-absent marking (background job runs daily at 11 PM IST)
 
 **Key Business Logic:**
 ```
@@ -1313,8 +1331,10 @@ Production Recommendations (v2):
 | Method | Endpoint | Roles | Description |
 |---|---|---|---|
 | GET | `/users` | SuperAdmin, HRAdmin | All users |
+| GET | `/users/me` | All Auth | Current user profile |
 | GET | `/users/{id}` | SuperAdmin, HRAdmin | User by ID |
 | PATCH | `/users/{id}/deactivate` | SuperAdmin | Deactivate user |
+| PATCH | `/users/{id}/role` | SuperAdmin | Change user role |
 
 ### 🏢 Organization Module
 
@@ -1324,11 +1344,17 @@ Production Recommendations (v2):
 | GET | `/departments/{id}` | All Auth | Get by ID |
 | POST | `/departments` | SuperAdmin, HRAdmin | Create |
 | PUT | `/departments/{id}` | SuperAdmin, HRAdmin | Update |
-| DELETE | `/departments/{id}` | SuperAdmin | Delete (if no employees) |
+| DELETE | `/departments/{id}` | SuperAdmin | Soft delete (if no employees) |
+| GET | `/departments/deleted` | SuperAdmin | Get deleted departments |
+| POST | `/departments/{id}/restore` | SuperAdmin | Restore deleted department |
+| DELETE | `/departments/purge` | SuperAdmin | Purge old deleted departments |
 | GET | `/designations` | All Auth | Get all (filter by dept) |
 | POST | `/designations` | SuperAdmin, HRAdmin | Create |
 | PUT | `/designations/{id}` | SuperAdmin, HRAdmin | Update |
-| DELETE | `/designations/{id}` | SuperAdmin | Delete |
+| DELETE | `/designations/{id}` | SuperAdmin | Soft delete |
+| GET | `/designations/deleted` | SuperAdmin, HRAdmin | Get deleted designations |
+| POST | `/designations/{id}/restore` | SuperAdmin | Restore deleted designation |
+| DELETE | `/designations/purge` | SuperAdmin | Purge old deleted designations |
 
 ### 👤 Employee Module
 
@@ -1346,6 +1372,8 @@ Production Recommendations (v2):
 |---|---|---|---|
 | POST | `/attendance/clock-in` | All Auth | Clock in |
 | POST | `/attendance/clock-out` | All Auth | Clock out + hours calc |
+| GET | `/attendance/my/today` | All Auth | Get my today's record |
+| GET | `/attendance/my/summary` | All Auth | Get my monthly summary |
 | GET | `/attendance` | Admin, Manager | All records (filtered) |
 | GET | `/attendance/today/{empId}` | All Auth | Today's record |
 | GET | `/attendance/summary/{empId}` | All Auth | Monthly summary |
@@ -1459,6 +1487,7 @@ Total estimate: ~200-300MB RAM comfortable
 ✅ IMPLEMENTED & WORKING:
 - Refresh token mechanism — Silent token refresh with queue system
 - Background token cleanup service — Expired tokens auto-deleted
+- Auto-absent marking service — Automatically marks absent for no-shows daily at 11 PM IST
 - Global exception middleware — All errors centralized
 - Soft delete with query filters — Designations + Departments
 - Dashboard service with real-time stats
@@ -1862,6 +1891,7 @@ EmployeeManagementSystemBackend/src/
     │   └── Reports/
     │       └── ReportService.cs         # Report generation
     ├── BackgroundServices/
+    │   ├── AutoAbsentMarkingService.cs  # Auto-mark absent for no-shows daily
     │   └── TokenCleanupService.cs       # Background token cleanup
     ├── Seeders/
     │   └── SuperAdminSeeder.cs          # SuperAdmin seeding
