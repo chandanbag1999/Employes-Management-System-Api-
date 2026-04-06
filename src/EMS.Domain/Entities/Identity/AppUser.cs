@@ -25,4 +25,6 @@ public class AppUser : BaseEntity
     // Navigation property for refresh tokens
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 
+    public ICollection<PasswordResetToken> PasswordResetTokens { get; set; } = new List<PasswordResetToken>();
+
 }

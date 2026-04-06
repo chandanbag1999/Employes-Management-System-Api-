@@ -37,8 +37,18 @@ public class PerformanceService : IPerformanceService
             EmployeeId = dto.EmployeeId,
             Title = dto.Title.Trim(),
             Description = dto.Description?.Trim(),
+            StartDate = dto.StartDate.HasValue
+                ? DateTime.SpecifyKind(dto.StartDate.Value, DateTimeKind.Utc)
+                : DateTime.UtcNow,
             Deadline = DateTime.SpecifyKind(dto.Deadline, DateTimeKind.Utc),
             ReviewCycle = dto.ReviewCycle.Trim().ToUpper(),
+            Priority = string.IsNullOrEmpty(dto.Priority)
+                ? GoalPriority.Medium
+                : Enum.Parse<GoalPriority>(dto.Priority),
+            Category = string.IsNullOrEmpty(dto.Category)
+                ? GoalCategory.Technical
+                : Enum.Parse<GoalCategory>(dto.Category),
+            Tags = dto.Tags?.Trim(),
             SetByManagerId = dto.SetByManagerId,
             ProgressPercent = 0,
             Status = GoalStatus.Active
@@ -48,6 +58,31 @@ public class PerformanceService : IPerformanceService
         return MapGoalToDto(created);
     }
 
+    public async Task<(GoalResponseDto? result, string? error)> UpdateGoalAsync(
+        int id, UpdateGoalDto dto)
+    {
+        var goal = await _repo.GetGoalByIdAsync(id);
+        if (goal == null) return (null, "Goal not found.");
+
+        if (!string.IsNullOrEmpty(dto.Title)) goal.Title = dto.Title.Trim();
+        if (dto.Description != null) goal.Description = dto.Description.Trim();
+        if (dto.Deadline.HasValue) goal.Deadline = DateTime.SpecifyKind(dto.Deadline.Value, DateTimeKind.Utc);
+        if (!string.IsNullOrEmpty(dto.ReviewCycle)) goal.ReviewCycle = dto.ReviewCycle.Trim().ToUpper();
+        if (!string.IsNullOrEmpty(dto.Priority))
+            goal.Priority = Enum.Parse<GoalPriority>(dto.Priority);
+        if (!string.IsNullOrEmpty(dto.Category))
+            goal.Category = Enum.Parse<GoalCategory>(dto.Category);
+        if (dto.Tags != null) goal.Tags = dto.Tags.Trim();
+        if (dto.SetByManagerId.HasValue) goal.SetByManagerId = dto.SetByManagerId.Value;
+
+        goal.UpdatedAt = DateTime.UtcNow;
+
+        var updated = await _repo.UpdateGoalAsync(id, goal);
+        return updated == null
+            ? (null, "Update failed.")
+            : (MapGoalToDto(updated), null);
+    }
+
     public async Task<(GoalResponseDto? result, string? error)> UpdateProgressAsync(
         int id, UpdateGoalProgressDto dto)
     {
@@ -55,7 +90,8 @@ public class PerformanceService : IPerformanceService
         if (goal == null) return (null, "Goal not found.");
 
         goal.ProgressPercent = dto.ProgressPercent;
-        goal.Status = dto.ProgressPercent == 100 ? GoalStatus.Completed : dto.Status;
+        if (dto.ProgressPercent == 100 && goal.Status == GoalStatus.Active)
+            goal.Status = GoalStatus.Completed;
         goal.UpdatedAt = DateTime.UtcNow;
 
         var updated = await _repo.UpdateGoalAsync(id, goal);
@@ -97,7 +133,6 @@ public class PerformanceService : IPerformanceService
     public async Task<(ReviewResponseDto? result, string? error)> CreateReviewAsync(
         CreateReviewDto dto)
     {
-        // Same cycle mein already review hai?
         var existing = await _repo.GetReviewByCycleAsync(
             dto.EmployeeId, dto.ReviewCycle.ToUpper());
         if (existing != null)
@@ -177,7 +212,6 @@ public class PerformanceService : IPerformanceService
             ? Math.Round(reviews.Average(r => r.OverallRating), 1)
             : (decimal?)null;
 
-        // Employee info from first goal or review
         var empName = goals.FirstOrDefault()?.Employee != null
             ? $"{goals.First().Employee!.FirstName} {goals.First().Employee!.LastName}"
             : reviews.FirstOrDefault()?.Employee != null
@@ -230,10 +264,16 @@ public class PerformanceService : IPerformanceService
         EmployeeCode = g.Employee?.EmployeeCode ?? "",
         Title = g.Title,
         Description = g.Description,
+        StartDate = g.StartDate,
         Deadline = g.Deadline,
         ProgressPercent = g.ProgressPercent,
         ReviewCycle = g.ReviewCycle,
         Status = g.Status.ToString(),
+        Priority = g.Priority.ToString(),
+        Category = g.Category.ToString(),
+        Tags = g.Tags,
+        ManagerComments = g.ManagerComments,
+        EmployeeSelfAssessment = g.EmployeeSelfAssessment,
         SetByManagerId = g.SetByManagerId,
         SetByManagerName = g.SetByManager != null
             ? $"{g.SetByManager.FirstName} {g.SetByManager.LastName}"

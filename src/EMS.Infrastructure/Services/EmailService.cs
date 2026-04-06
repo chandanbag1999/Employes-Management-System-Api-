@@ -40,6 +40,28 @@ public class EmailService : IEmailService
         await SendEmailAsync(toEmail, subject, htmlBody);
     }
 
+    public async Task SendPasswordResetEmailAsync(
+        string toEmail,
+        string userName,
+        string resetUrl)
+    {
+        var subject = "🔒 EMS — Reset Your Password";
+        var htmlBody = BuildPasswordResetEmailTemplate(userName, resetUrl);
+
+        await SendEmailAsync(toEmail, subject, htmlBody);
+    }
+
+    public async Task SendEmailVerificationEmailAsync(
+        string toEmail,
+        string userName,
+        string verificationUrl)
+    {
+        var subject = "📧 EMS — Verify Your Email Address";
+        var htmlBody = BuildEmailVerificationTemplate(userName, verificationUrl);
+
+        await SendEmailAsync(toEmail, subject, htmlBody);
+    }
+
     // ── Generic Send ──────────────────────────────────────────────────────────
 
     public async Task SendEmailAsync(string toEmail, string subject, string htmlBody)
@@ -266,4 +288,87 @@ public class EmailService : IEmailService
         </html>
         """;
     }
+
+    private static string BuildPasswordResetEmailTemplate(
+        string userName,
+        string resetUrl)
+    {
+        return $"""
+        <!DOCTYPE html>
+        <html lang="en">
+        <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Reset Password</title></head>
+        <body style="margin:0;padding:0;background-color:#f1f5f9;font-family:'Segoe UI',Arial,sans-serif;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f5f9;padding:40px 0;">
+            <tr><td align="center">
+              <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);max-width:600px;width:100%;">
+                <tr><td style="background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 100%);padding:40px 48px;text-align:center;">
+                  <h1 style="margin:0;color:#ffffff;font-size:28px;font-weight:700;letter-spacing:-0.5px;">Employee Management System</h1>
+                  <p style="margin:8px 0 0;color:rgba(255,255,255,0.85);font-size:14px;">Password Reset Request</p>
+                </td></tr>
+                <tr><td style="padding:40px 48px 0;">
+                  <h2 style="margin:0 0 12px;color:#1e293b;font-size:22px;font-weight:600;">Hello, {userName}!</h2>
+                  <p style="margin:0;color:#64748b;font-size:15px;line-height:1.6;">We received a request to reset your password. Click the button below to set a new one. This link expires in 1 hour.</p>
+                </td></tr>
+                <tr><td style="padding:32px 48px;text-align:center;">
+                  <a href="{resetUrl}" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#ffffff;text-decoration:none;padding:16px 48px;border-radius:50px;font-size:15px;font-weight:600;letter-spacing:0.3px;box-shadow:0 4px 14px rgba(99,102,241,0.4);">Reset My Password →</a>
+                </td></tr>
+                <tr><td style="padding:0 48px 28px;">
+                  <table width="100%" cellpadding="0" cellspacing="0" style="background:#fef3c7;border-left:4px solid #f59e0b;border-radius:0 8px 8px 0;">
+                    <tr><td style="padding:14px 18px;">
+                      <p style="margin:0;color:#92400e;font-size:13px;font-weight:500;line-height:1.5;">⚠️ <strong>Security Notice:</strong> If you did not request this password reset, please ignore this email. Your account remains secure.</p>
+                    </td></tr>
+                  </table>
+                </td></tr>
+                <tr><td style="background:#f8fafc;border-top:1px solid #e2e8f0;padding:24px 48px;text-align:center;">
+                  <p style="margin:0;color:#94a3b8;font-size:12px;line-height:1.6;">This is an automated message from EMS. Please do not reply to this email.<br/>If you did not expect this email, please contact your HR department.</p>
+                </td></tr>
+              </table>
+            </td></tr>
+          </table>
+        </body>
+        </html>
+        """;
+    }
+
+    private static string BuildEmailVerificationTemplate(
+        string userName,
+        string verificationUrl)
+    {
+        return $"""
+        <!DOCTYPE html>
+        <html lang="en">
+        <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Verify Email</title></head>
+        <body style="margin:0;padding:0;background-color:#f1f5f9;font-family:'Segoe UI',Arial,sans-serif;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f5f9;padding:40px 0;">
+            <tr><td align="center">
+              <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);max-width:600px;width:100%;">
+                <tr><td style="background:linear-gradient(135deg,#6366f1 0%,#10b981 100%);padding:40px 48px;text-align:center;">
+                  <h1 style="margin:0;color:#ffffff;font-size:28px;font-weight:700;letter-spacing:-0.5px;">Employee Management System</h1>
+                  <p style="margin:8px 0 0;color:rgba(255,255,255,0.85);font-size:14px;">Email Verification</p>
+                </td></tr>
+                <tr><td style="padding:40px 48px 0;">
+                  <h2 style="margin:0 0 12px;color:#1e293b;font-size:22px;font-weight:600;">Welcome, {userName}!</h2>
+                  <p style="margin:0;color:#64748b;font-size:15px;line-height:1.6;">Please verify your email address by clicking the button below. This link expires in 24 hours.</p>
+                </td></tr>
+                <tr><td style="padding:32px 48px;text-align:center;">
+                  <a href="{verificationUrl}" style="display:inline-block;background:linear-gradient(135deg,#10b981,#6366f1);color:#ffffff;text-decoration:none;padding:16px 48px;border-radius:50px;font-size:15px;font-weight:600;letter-spacing:0.3px;box-shadow:0 4px 14px rgba(16,185,129,0.4);">Verify My Email →</a>
+                </td></tr>
+                <tr><td style="padding:0 48px 28px;">
+                  <table width="100%" cellpadding="0" cellspacing="0" style="background:#ede9fe;border-left:4px solid #6366f1;border-radius:0 8px 8px 0;">
+                    <tr><td style="padding:14px 18px;">
+                      <p style="margin:0;color:#4c1d95;font-size:13px;font-weight:500;line-height:1.5;">ℹ️ <strong>Note:</strong> Verifying your email ensures you can recover your account if you forget your password.</p>
+                    </td></tr>
+                  </table>
+                </td></tr>
+                <tr><td style="background:#f8fafc;border-top:1px solid #e2e8f0;padding:24px 48px;text-align:center;">
+                  <p style="margin:0;color:#94a3b8;font-size:12px;line-height:1.6;">This is an automated message from EMS. Please do not reply to this email.<br/>If you did not expect this email, please contact your HR department.</p>
+                </td></tr>
+              </table>
+            </td></tr>
+          </table>
+        </body>
+        </html>
+        """;
+    }
 }
+

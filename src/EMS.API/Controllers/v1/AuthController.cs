@@ -106,6 +106,78 @@ public class AuthController : ControllerBase
             "Please login again with your new password."));
     }
 
+    // POST api/v1/auth/forgot-password — user ko email bhejta hai reset link ke saath
+    [HttpPost("forgot-password")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ApiResponse<string>.Fail("Invalid request data."));
+
+        // Hamesha success return karo — email enumeration prevent karne ke liye
+        await _authService.RequestForgotPasswordAsync(
+            dto.Email, GetIpAddress());
+
+        return Ok(ApiResponse<string>.Ok(
+            "If an account exists with this email, a password reset link has been sent.",
+            "Check your inbox."));
+    }
+
+    // POST api/v1/auth/reset-password — token ke saath naya password set karta hai
+    [HttpPost("reset-password")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ApiResponse<string>.Fail("Invalid request data."));
+
+        var result = await _authService.ResetPasswordAsync(dto);
+
+        if (!result.success)
+            return BadRequest(ApiResponse<string>.Fail(result.error ?? "Password reset failed."));
+
+        return Ok(ApiResponse<string>.Ok(
+            "Password reset successful. Please login with your new password.",
+            "Reset successful."));
+    }
+
+    // POST api/v1/auth/verify-email — email verification link se aane wala token verify karta hai
+    [HttpPost("verify-email")]
+    [AllowAnonymous]
+    public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ApiResponse<string>.Fail("Invalid request data."));
+
+        var result = await _authService.VerifyEmailAsync(dto);
+
+        if (!result.success)
+            return BadRequest(ApiResponse<string>.Fail(result.error ?? "Email verification failed."));
+
+        return Ok(ApiResponse<string>.Ok(
+            "Your email has been verified. You can now login.",
+            "Verification successful."));
+    }
+
+    // POST api/v1/auth/resend-verification — verification email dobara bhejta hai
+    [HttpPost("resend-verification")]
+    [Authorize]
+    public async Task<IActionResult> ResendVerification()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
+            return Unauthorized(ApiResponse<string>.Fail("Invalid token."));
+
+        var result = await _authService.ResendVerificationEmailAsync(userId);
+
+        if (!result.success)
+            return BadRequest(ApiResponse<string>.Fail(result.error ?? "Resend failed."));
+
+        return Ok(ApiResponse<string>.Ok(
+            "Verification email has been sent.",
+            "Check your inbox."));
+    }
+
     // GET api/v1/auth/test-email?to=youremail@gmail.com
     [HttpGet("test-email")]
     [AllowAnonymous]

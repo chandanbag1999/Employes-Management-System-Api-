@@ -1,3 +1,4 @@
+using EMS.Application.Modules.Employees.Interfaces;
 using EMS.Application.Modules.Identity.DTOs;
 using EMS.Application.Modules.Identity.Interfaces;
 using EMS.Domain.Enums;
@@ -8,13 +9,16 @@ public class UserService : IUserService
 {
     private readonly IAuthRepository _authRepository;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
+    private readonly IEmployeeRepository _employeeRepository;
 
     public UserService(
         IAuthRepository authRepository,
-        IRefreshTokenRepository refreshTokenRepository)
+        IRefreshTokenRepository refreshTokenRepository,
+        IEmployeeRepository employeeRepository)
     {
         _authRepository = authRepository;
         _refreshTokenRepository = refreshTokenRepository;
+        _employeeRepository = employeeRepository;
     }
 
     public async Task<IEnumerable<UserResponseDto>> GetAllAsync()
@@ -26,13 +30,13 @@ public class UserService : IUserService
     public async Task<UserResponseDto?> GetByIdAsync(int id)
     {
         var user = await _authRepository.GetByIdAsync(id);
-        return user == null ? null : MapToDto(user);
+        return user == null ? null : await MapToDtoWithEmployee(user);
     }
 
     public async Task<UserResponseDto?> GetCurrentUserAsync(int userId)
     {
         var user = await _authRepository.GetByIdAsync(userId);
-        return user == null ? null : MapToDto(user);
+        return user == null ? null : await MapToDtoWithEmployee(user);
     }
 
     public async Task<bool> DeactivateUserAsync(int id)
@@ -44,6 +48,19 @@ public class UserService : IUserService
         user.UpdatedAt = DateTime.UtcNow;
 
         await _refreshTokenRepository.RevokeAllUserTokensAsync(id);
+        await _authRepository.SaveChangesAsync();
+
+        return true;
+    }
+
+    public async Task<bool> ActivateUserAsync(int id)
+    {
+        var user = await _authRepository.GetByIdAsync(id);
+        if (user == null) return false;
+
+        user.IsActive = true;
+        user.UpdatedAt = DateTime.UtcNow;
+
         await _authRepository.SaveChangesAsync();
 
         return true;
@@ -76,4 +93,12 @@ public class UserService : IUserService
         LastLogin = u.LastLogin,
         IsLockedOut = u.LockoutEnd.HasValue && u.LockoutEnd > DateTime.UtcNow
     };
+
+    private async Task<UserResponseDto> MapToDtoWithEmployee(EMS.Domain.Entities.Identity.AppUser u)
+    {
+        var employeeId = await _employeeRepository.GetIdByUserIdAsync(u.Id);
+        var dto = MapToDto(u);
+        dto.EmployeeId = employeeId;
+        return dto;
+    }
 }

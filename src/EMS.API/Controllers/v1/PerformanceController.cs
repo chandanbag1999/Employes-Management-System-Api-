@@ -52,6 +52,22 @@ public class PerformanceController : ControllerBase
             ApiResponse<GoalResponseDto>.Ok(result, "Goal created."));
     }
 
+    // PUT api/v1/performance/goals/5
+    [HttpPut("goals/{id}")]
+    [Authorize(Roles = "SuperAdmin,HRAdmin,Manager")]
+    public async Task<IActionResult> UpdateGoal(int id, [FromBody] UpdateGoalDto dto)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        var (result, error) = await _service.UpdateGoalAsync(id, dto);
+        if (error != null)
+            return error.Contains("not found")
+                ? NotFound(ApiResponse<string>.Fail(error))
+                : BadRequest(ApiResponse<string>.Fail(error));
+
+        return Ok(ApiResponse<GoalResponseDto>.Ok(result, "Goal updated."));
+    }
+
     // PATCH api/v1/performance/goals/5/progress
     [HttpPatch("goals/{id}/progress")]
     public async Task<IActionResult> UpdateProgress(

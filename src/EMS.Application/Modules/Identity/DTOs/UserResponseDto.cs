@@ -12,4 +12,5 @@ public class UserResponseDto
     public DateTime? LastLogin { get; set; }
     public bool IsLockedOut { get; set; }
     public bool IsFirstLogin { get; set; }
+    public int? EmployeeId { get; set; }
 }

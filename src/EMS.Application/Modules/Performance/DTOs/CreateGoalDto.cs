@@ -14,12 +14,21 @@ public class CreateGoalDto
     [MaxLength(1000)]
     public string? Description { get; set; }
 
+    public DateTime? StartDate { get; set; }
+
     [Required]
     public DateTime Deadline { get; set; }
 
     [Required]
     [MaxLength(20)]
-    public string ReviewCycle { get; set; } = string.Empty; // "2026-Q1"
+    public string ReviewCycle { get; set; } = string.Empty;
+
+    public string? Priority { get; set; }
+
+    public string? Category { get; set; }
+
+    [MaxLength(500)]
+    public string? Tags { get; set; }
 
     public int? SetByManagerId { get; set; }
 }

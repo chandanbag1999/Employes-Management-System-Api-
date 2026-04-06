@@ -22,6 +22,21 @@ public class GoalConfiguration : IEntityTypeConfiguration<Goal>
         builder.Property(g => g.Status)
             .HasConversion<string>();
 
+        builder.Property(g => g.Priority)
+            .HasConversion<string>();
+
+        builder.Property(g => g.Category)
+            .HasConversion<string>();
+
+        builder.Property(g => g.Tags)
+            .HasMaxLength(500);
+
+        builder.Property(g => g.ManagerComments)
+            .HasMaxLength(2000);
+
+        builder.Property(g => g.EmployeeSelfAssessment)
+            .HasMaxLength(2000);
+
         // Goal → Employee
         builder.HasOne(g => g.Employee)
             .WithMany()

@@ -9,5 +9,6 @@ public interface IUserService
     Task<UserResponseDto?> GetByIdAsync(int id);
     Task<UserResponseDto?> GetCurrentUserAsync(int userId);
     Task<bool> DeactivateUserAsync(int id);
+    Task<bool> ActivateUserAsync(int id);
     Task<bool> ChangeRoleAsync(int id, UserRole newRole);
 }

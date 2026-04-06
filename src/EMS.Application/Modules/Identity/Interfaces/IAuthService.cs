@@ -13,4 +13,9 @@ public interface IAuthService
     Task<(bool success, string? error)> ChangePasswordAsync(
         int userId,
         ChangePasswordDto dto);
+
+    Task<(bool success, string? error)> RequestForgotPasswordAsync(string email, string? ipAddress);
+    Task<(bool success, string? error)> ResetPasswordAsync(ResetPasswordDto dto);
+    Task<(bool success, string? error)> VerifyEmailAsync(VerifyEmailDto dto);
+    Task<(bool success, string? error)> ResendVerificationEmailAsync(int userId);
 }

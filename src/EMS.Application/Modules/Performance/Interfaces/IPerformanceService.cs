@@ -10,6 +10,8 @@ public interface IPerformanceService
         int? employeeId, string? reviewCycle);
     Task<GoalResponseDto?> GetGoalByIdAsync(int id);
     Task<GoalResponseDto> CreateGoalAsync(CreateGoalDto dto);
+    Task<(GoalResponseDto? result, string? error)> UpdateGoalAsync(
+        int id, UpdateGoalDto dto);
     Task<(GoalResponseDto? result, string? error)> UpdateProgressAsync(
         int id, UpdateGoalProgressDto dto);
     Task<(bool success, string? error)> DeleteGoalAsync(int id);

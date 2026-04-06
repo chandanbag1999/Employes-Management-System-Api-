@@ -26,6 +26,7 @@ public class PerformanceRepository : IPerformanceRepository
             .Include(g => g.Employee)
                 .ThenInclude(e => e!.Department)
             .Include(g => g.SetByManager)
+            .Where(g => !g.IsDeleted)
             .AsQueryable();
 
         if (employeeId.HasValue)
@@ -59,6 +60,14 @@ public class PerformanceRepository : IPerformanceRepository
         var existing = await _context.Goals.FindAsync(id);
         if (existing == null) return null;
 
+        existing.Title = goal.Title;
+        existing.Description = goal.Description;
+        existing.Deadline = goal.Deadline;
+        existing.ReviewCycle = goal.ReviewCycle;
+        existing.Priority = goal.Priority;
+        existing.Category = goal.Category;
+        existing.Tags = goal.Tags;
+        existing.SetByManagerId = goal.SetByManagerId;
         existing.ProgressPercent = goal.ProgressPercent;
         existing.Status = goal.Status;
         existing.UpdatedAt = DateTime.UtcNow;

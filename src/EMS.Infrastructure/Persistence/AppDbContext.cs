@@ -16,6 +16,7 @@ public class AppDbContext : DbContext
     // Identity
     public DbSet<AppUser> Users => Set<AppUser>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
 
     // Organization
     public DbSet<Department> Departments => Set<Department>();

@@ -68,6 +68,18 @@ public class UsersController : ControllerBase
         return Ok(ApiResponse<string>.Ok("User deactivated."));
     }
 
+    // PATCH api/v1/users/5/activate
+    [HttpPatch("{id}/activate")]
+    [Authorize(Roles = "SuperAdmin")]
+    public async Task<IActionResult> Activate(int id)
+    {
+        var result = await _userService.ActivateUserAsync(id);
+        if (!result)
+            return NotFound(ApiResponse<string>.Fail("User not found."));
+
+        return Ok(ApiResponse<string>.Ok("User activated."));
+    }
+
     // PATCH api/v1/users/5/role
     [HttpPatch("{id}/role")]
     [Authorize(Roles = "SuperAdmin")]

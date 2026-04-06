@@ -14,19 +14,25 @@ public class AuthServiceTests
 {
     private readonly Mock<IAuthRepository> _authRepoMock;
     private readonly Mock<IRefreshTokenRepository> _refreshTokenRepoMock;
+    private readonly Mock<IPasswordResetTokenRepository> _passwordResetTokenRepoMock;
     private readonly Mock<IJwtService> _jwtServiceMock;
+    private readonly Mock<IEmailService> _emailServiceMock;
     private readonly AuthService _sut;
 
     public AuthServiceTests()
     {
         _authRepoMock = new Mock<IAuthRepository>();
         _refreshTokenRepoMock = new Mock<IRefreshTokenRepository>();
+        _passwordResetTokenRepoMock = new Mock<IPasswordResetTokenRepository>();
         _jwtServiceMock = new Mock<IJwtService>();
+        _emailServiceMock = new Mock<IEmailService>();
 
         _sut = new AuthService(
             _authRepoMock.Object,
             _refreshTokenRepoMock.Object,
-            _jwtServiceMock.Object);
+            _passwordResetTokenRepoMock.Object,
+            _jwtServiceMock.Object,
+            _emailServiceMock.Object);
     }
 
     // ── Register Tests ────────────────────────────────────────────
