@@ -3,6 +3,7 @@ using EMS.Application.Modules.Identity.DTOs;
 using EMS.Application.Modules.Identity.Interfaces;
 using EMS.Domain.Entities.Identity;
 using EMS.Domain.Enums;
+using Microsoft.Extensions.Configuration;
 
 namespace EMS.Application.Modules.Identity.Services;
 
@@ -13,6 +14,7 @@ public class AuthService : IAuthService
     private readonly IPasswordResetTokenRepository _passwordResetTokenRepository;
     private readonly IJwtService _jwtService;
     private readonly IEmailService _emailService;
+    private readonly IConfiguration _config;
 
     private const int MaxFailedAttempts = 5;
     private static readonly TimeSpan LockoutDuration = TimeSpan.FromMinutes(15);
@@ -24,13 +26,15 @@ public class AuthService : IAuthService
         IRefreshTokenRepository refreshTokenRepository,
         IPasswordResetTokenRepository passwordResetTokenRepository,
         IJwtService jwtService,
-        IEmailService emailService)
+        IEmailService emailService,
+        IConfiguration config)
     {
         _authRepository = authRepository;
         _refreshTokenRepository = refreshTokenRepository;
         _passwordResetTokenRepository = passwordResetTokenRepository;
         _jwtService = jwtService;
         _emailService = emailService;
+        _config = config;
     }
 
     public async Task<AuthResponseDto?> RegisterAsync(RegisterDto dto)
@@ -201,8 +205,7 @@ public class AuthService : IAuthService
         // Send email (failure should not affect user experience)
         try
         {
-            // frontendUrl ko config se read karo — abhi hardcoded, future mein inject karo
-            var frontendUrl = "http://localhost:8080";
+            var frontendUrl = _config["AppSettings:FrontendUrl"] ?? "http://localhost:8080";
             var resetUrl = $"{frontendUrl}/reset-password?token={token}";
             await _emailService.SendPasswordResetEmailAsync(
                 user.Email, user.UserName, resetUrl);
@@ -314,7 +317,7 @@ public class AuthService : IAuthService
 
         try
         {
-            var frontendUrl = "http://localhost:8080";
+            var frontendUrl = _config["AppSettings:FrontendUrl"] ?? "http://localhost:8080";
             var verifyUrl = $"{frontendUrl}/verify-email?token={token}";
             await _emailService.SendEmailVerificationEmailAsync(
                 user.Email, user.UserName, verifyUrl);
